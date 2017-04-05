@@ -3,10 +3,8 @@ import
    GUI
    Input
    PlayerManager
-   System
 define
    P
-   initPlayers
 in
    %1. Create the port for the GUI and launch its interface
    %2. Create the port for every player using the PlayerManager and assign an unique id between
@@ -17,12 +15,4 @@ in
 
    P = {GUI.portWindow}
    {Send P buildWindow}
-
-    proc{initPlayers Num}
-       {System.show Num}
-       {initPlayer Num - 1}
-    end
-    
-   {initPlayers Input.nbPlayer}
-   
 end
