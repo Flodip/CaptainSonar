@@ -1,0 +1,10 @@
+functor
+import
+	GUI
+	Input
+	PlayerManager
+define
+	P
+in
+	P = {StartWindow}
+end
