@@ -1,5 +1,5 @@
-import 
-	Input 
+import
+	Input
 export 
 	portPlayer:StartPlayer 
 define 
@@ -11,32 +11,32 @@ in
 		Port 
 	in 
 		{NewPort Stream Port} 
-		thread {TreatStream Stream <p1> <p2> ...} end 
+		thread {TreatStream Stream} end 
 		Port 
 	end
 	
-	proc{TreatStream Stream <p1> <p2> ...}
+	proc{TreatStream Stream}
 		case Stream
 		of nil then skip
-		[] initPosition(ID Position)|T then
-		[] move(ID Position Direction)|T then
-		[] dive|T then
-		[] chargeItem(ID KindItem)|T then
-		[] fireItem(ID KindFire)|T then
-		[] fireMine(ID Mine)|T then
-		[] isSurface(ID Answer)|T then
-		[] sayMove(ID Direction)|T then
-		[] saySurface(ID Direction)|T then
-		[] sayCharge(ID KindItem)|T then
-		[] sayMinePlaced(ID)|T then
-		[] sayMissileExplode(ID Position Message)|T then
-		[] sayMineExplode(ID Position Message)|T then
-		[] sayPassingDrone(Drone ID Answer)|T then
-		[] sayAnswerDrone(Drone ID Answer)|T then
-		[] sayPassingSonar(ID Answer)|T then
-		[] sayAnswerSonar(ID Answer)|T then
-		[] sayDeath(ID)|T then
-		[] sayDamageTaken(ID Damage LifeLeft)|T then
+		[] initPosition(ID Position)|T then skip
+		[] move(ID Position Direction)|T then skip
+		[] dive|T then skip
+		[] chargeItem(ID KindItem)|T then skip
+		[] fireItem(ID KindFire)|T then skip
+		[] fireMine(ID Mine)|T then skip
+		[] isSurface(ID Answer)|T then skip
+		[] sayMove(ID Direction)|T then skip
+		[] saySurface(ID Direction)|T then skip
+		[] sayCharge(ID KindItem)|T then skip
+		[] sayMinePlaced(ID)|T then skip
+		[] sayMissileExplode(ID Position Message)|T then skip
+		[] sayMineExplode(ID Position Message)|T then skip
+		[] sayPassingDrone(Drone ID Answer)|T then skip
+		[] sayAnswerDrone(Drone ID Answer)|T then skip
+		[] sayPassingSonar(ID Answer)|T then skip
+		[] sayAnswerSonar(ID Answer)|T then skip
+		[] sayDeath(ID)|T then skip
+		[] sayDamageTaken(ID Damage LifeLeft)|T then skip
 		end
 	end 
 end
