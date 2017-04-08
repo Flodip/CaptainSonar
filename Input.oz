@@ -47,7 +47,7 @@ in
 
 %%%% Description of the map %%%%
    
-   NRow = 5%10
+   NRow = 10
    NColumn = 10
 
    Map = [[0 0 0 0 0 0 0 0 0 0]
@@ -64,7 +64,7 @@ in
 %%%% Players description %%%%
    
    NbPlayer = 2
-   Players = [player000random player000random]
+   Players = [player000random player000randombis]
    Colors = [red blue]
 
 %%%% Thinking parameters (only in simultaneous) %%%%

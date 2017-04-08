@@ -18,7 +18,7 @@ in
 		Stream 
 		Port 
 	in 
-		PID = id(id:ID color:Color name:player000random)
+		PID = id(id:ID color:Color name:player000randombis)
 		PLife = Input.maxDamage
 		PTimeSurface = 0
 		PIsSurface = true

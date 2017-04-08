@@ -2,6 +2,7 @@ functor
 import
    QTk at 'x-oz://system/wp/QTk.ozf'
    Input
+   System
 export
    portWindow:StartWindow
 define
