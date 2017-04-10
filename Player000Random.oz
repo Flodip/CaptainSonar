@@ -6,6 +6,11 @@ import
 export 
    portPlayer:StartPlayer 
 define 
+   %Utilities
+   NewPortObject
+   %Getter and setter
+   Porter
+   %Player
    StartPlayer 
    TreatStream
    
@@ -13,7 +18,37 @@ define
    PLife
    PTimeSurface
 	PIsSurface
-in 
+in
+
+   fun {NewPortObject Behaviour Init}
+      proc {MsgLoop S1 State}
+	 case S1
+	 of Msg|S2 then
+	    {MsgLoop S2 {Behaviour Msg State}}
+	 [] nil then skip
+	 end
+      end
+   Sin
+   in
+      thread {MsgLoop Sin Init} end
+      {NewPort Sin}
+   end
+
+   fun {Porter LifeInit IsSurfaceInit TurnSurfaceInit}
+      fun {Loop Msg Life IsSurface TurnSurface}
+	 case Msg
+	 of getLife(N) then N = Life Life
+	 % life = life - N
+	 [] damage(N) then Life - N
+	 [] isSurface then IsSurface
+	 [] getTurnSurface then TurnSurface
+	 [] downTurnSurface(N) then TurnSurface - N
+	 end
+      end
+   in
+      {NewPortObject Loop LifeInit IsSurfaceInit TurnSurfaceInit}
+   end
+   
    fun{StartPlayer Color ID} 
       Stream 
       Port 
@@ -28,6 +63,7 @@ in
    end
 
    proc{TreatStream Stream}
+      
       case Stream
       of nil then skip
       [] initPosition(ID Position)|T then
