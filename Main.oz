@@ -12,7 +12,6 @@ define
    InitPlayers
    InitPosPlayers
    PlayByTurn
-   Afa
    
    GetTimeSurface
    SetTimeSurface
@@ -31,33 +30,8 @@ define
    BroadcastDamageTaken
    BroadcastDeath
 in
-   %Port GUI init and display Window
-   Judge = {GUI.portWindow}
-   {Send Judge buildWindow}
-   {System.show 'Window initialized'}
-   
-   %Ports Players init
-   {System.show 'Starting player initialization'}
-   {Afa}
-   {System.show 'Starting player initialization'}
-   ListPlayers = {InitPlayers}
-   {System.show 'Players Port initialized'}
-   %Player initial position
-   {InitPosPlayers}
-   {System.show 'Players Pos initialized'}
-
-   %Lets the game begin
-   if(Input.isTurnByTurn) then
-      {PlayByTurn ListPlayers}      
-   else
-      skip
-   end
 
    %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-   proc {Afa}
-      {System.show 'Test'}
-   end
-   
    
    fun {InitPlayers}
       %loops through each Players and Colors from Input and associates them
@@ -73,7 +47,6 @@ in
          end
       end
    in
-      {System.show 'caca'}
       {IPR 1 Input.players Input.colors ListTimeSurfacePlayers}
    end
 
@@ -219,5 +192,27 @@ in
       {Broadcast sayDamageTaken(ID LifeLeft) Players}
    end
 
-   %%%%%%%%%% END BROADCAST METHOD %%%%%%%%%%%%%%
+%%%%%%%%%% END BROADCAST METHOD %%%%%%%%%%%%%%
+
+
+   %Port GUI init and display Window
+   Judge = {GUI.portWindow}
+   {Send Judge buildWindow}
+   {System.show 'Window initialized'}
+   
+   %Ports Players init
+   {System.show 'Starting player initialization'}
+   ListPlayers = {InitPlayers}
+   {System.show 'Players Port initialized'}
+   %Player initial position
+   {System.show 'Starting player pos initialization'}
+   {InitPosPlayers}
+   {System.show 'Players Pos initialized'}
+
+   %Lets the game begin
+   if(Input.isTurnByTurn) then
+      {PlayByTurn ListPlayers}      
+   else
+      skip
+   end
 end
