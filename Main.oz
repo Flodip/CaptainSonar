@@ -12,7 +12,8 @@ define
    InitPlayers
    InitPosPlayers
    PlayByTurn
-
+   Afa
+   
    GetTimeSurface
    SetTimeSurface
 
@@ -36,6 +37,9 @@ in
    {System.show 'Window initialized'}
    
    %Ports Players init
+   {System.show 'Starting player initialization'}
+   {Afa}
+   {System.show 'Starting player initialization'}
    ListPlayers = {InitPlayers}
    {System.show 'Players Port initialized'}
    %Player initial position
@@ -50,7 +54,11 @@ in
    end
 
    %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+   proc {Afa}
+      {System.show 'Test'}
+   end
+   
+   
    fun {InitPlayers}
       %loops through each Players and Colors from Input and associates them
       fun {IPR N Players Colors TimeSurfacePlayers}
@@ -65,6 +73,7 @@ in
          end
       end
    in
+      {System.show 'caca'}
       {IPR 1 Input.players Input.colors ListTimeSurfacePlayers}
    end
 
