@@ -211,7 +211,7 @@ in
 
    %Lets the game begin
    if(Input.isTurnByTurn) then
-      {PlayByTurn ListPlayers}      
+      {PlayByTurn ListPlayers}
    else
       skip
    end
