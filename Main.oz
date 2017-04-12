@@ -5,6 +5,9 @@ import
    PlayerManager
    System
 define
+   % Util Methods
+   IsNotGround
+   
    Judge
    ListPlayers
    ListTimeSurfacePlayers
@@ -15,6 +18,7 @@ define
    
    GetTimeSurface
    SetTimeSurface
+
 
    Broadcast
    BroadcastMove
@@ -30,6 +34,13 @@ define
    BroadcastDamageTaken
    BroadcastDeath
 in
+
+    %%%%%%%%%% Util  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   fun {IsNotGround}
+      true
+   end
+   %%%%%%%%%% End utilities %%%%%%%%%%%%%%%%%%%%%
 
    %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
    
@@ -51,6 +62,7 @@ in
    end
 
    proc {InitPosPlayers}
+      %TODO Check + impl isNotGround methds
       %loops through each Players and asks them their initial Pos
       proc {IPPR Players}
          Pos ID in
@@ -128,7 +140,7 @@ in
 
    %%%%%%%%%% END MISC METHODS %%%%%%%%%%%%%%%%%%
 
-
+  
    %%%%%%%%%% BROADCAST METHODS %%%%%%%%%%%%%%%%%
 
    % Broadcast message Msg to players in Players

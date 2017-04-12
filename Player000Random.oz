@@ -19,7 +19,6 @@ define
 
    Object
    %Util
-   CheckId
    
    %Player
    StartPlayer 
@@ -183,19 +182,14 @@ end
 %%%%%%%%% End setters and getters %%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%% Utilities  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Method used to check if the id passed is the same as the id of the current player
-fun {CheckId Id}
-   % get id check same return true ou false en fonction
-   true
-end
+
 %%%%%%%%% End utilities  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    proc{TreatStream Stream}
-      % TODO partout faire appel à une méthode vérifiant si l'ID passé en param == à soit même 
       case Stream
       of nil then skip
       [] initPosition(ID Position)|T then
-	 X Y in % TODO Erreur peux être gen sur un ile (j'ai eu le cas ) :/
+	 X Y in 
 	 X = ({OS.rand} mod Input.nColumn)+1
 	 Y = ({OS.rand} mod Input.nRow)+1
 	      
