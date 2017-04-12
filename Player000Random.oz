@@ -11,10 +11,14 @@ define
    Porter
    X
    Y
+   Id
    IsSurface
    Life
    TurnSurface
    LaunchServer
+
+   %Util
+   CheckId
    
    %Player
    StartPlayer 
@@ -70,6 +74,18 @@ in
    {NewPortObj Loop 0}
 end
 
+fun {Id}
+   fun {Loop Msg Id}
+      case Msg
+      of setId(N) then N
+      [] getId(N) then N = Id
+	 Id
+      end
+   end
+in
+   {NewPortObj Loop null}
+end
+
 fun {IsSurface}
    fun {Loop Msg IsSurface}
       case Msg
@@ -107,45 +123,58 @@ in
 end
 
 fun {LaunchServer}
-   proc {Loop S Xs Ys ISs Ls TSs}
+   proc {Loop S Xs Ys Ids ISs Ls TSs}
       case S
 	 %X setter+getter
-      of getX(N)|T then {Send Xs getX(N)} {Loop T Xs Ys ISs Ls TSs}
-      [] setX(N)|T then {Send Xs setX(N)} {Loop T Xs Ys ISs Ls TSs}
+      of getX(N)|T then {Send Xs getX(N)} {Loop T Xs Ys Ids ISs Ls TSs}
+      [] setX(N)|T then {Send Xs setX(N)} {Loop T Xs Ys Ids ISs Ls TSs}
 	 %Y setter+getter
-      [] getY(N)|T then {Send Ys getY(N)} {Loop T Xs Ys ISs Ls TSs}
-      [] setY(N)|T then {Send Ys setY(N)} {Loop T Xs Ys ISs Ls TSs}
+      [] getY(N)|T then {Send Ys getY(N)} {Loop T Xs Ys Ids ISs Ls TSs}
+      [] setY(N)|T then {Send Ys setY(N)} {Loop T Xs Ys Ids ISs Ls TSs}
+	 %Id
+      [] getId(N)|T then {Send Ids getId(N)} {Loop T Xs Ys Ids ISs Ls TSs}
+      [] setId(N)|T then {Send Ids setId(N)} {Loop T Xs Ys Ids ISs Ls TSs}
 	 %Life 
-      [] getLife(N)|T then {Send Ls getLife(N)} {Loop T Xs Ys ISs Ls TSs} 
-      [] setLife(N)|T then {Send Ls setLife(N)} {Loop T Xs Ys ISs Ls TSs}
+      [] getLife(N)|T then {Send Ls getLife(N)} {Loop T Xs Ys Ids ISs Ls TSs} 
+      [] setLife(N)|T then {Send Ls setLife(N)} {Loop T Xs Ys Ids ISs Ls TSs}
 	 %IsSurface
-      [] isSurface(N)|T then {Send ISs isSurface(N)} {Loop T Xs Ys ISs Ls TSs} 
-      [] setIsSurface(N)|T then {Send ISs setIsSurface(N)} {Loop T Xs Ys ISs Ls TSs}
+      [] isSurface(N)|T then {Send ISs isSurface(N)} {Loop T Xs Ys Ids ISs Ls TSs} 
+      [] setIsSurface(N)|T then {Send ISs setIsSurface(N)} {Loop T Xs Ys Ids ISs Ls TSs}
 	 %TurnSurface
-      [] getTurnSurface(N)|T then {Send TSs getTurnSurface(N)} {Loop T Xs Ys ISs Ls TSs} 
-      [] setTurnSurface(N)|T then {Send TSs setTurnSurface(N)} {Loop T Xs Ys ISs Ls TSs}
+      [] getTurnSurface(N)|T then {Send TSs getTurnSurface(N)} {Loop T Xs Ys Ids ISs Ls TSs} 
+      [] setTurnSurface(N)|T then {Send TSs setTurnSurface(N)} {Loop T Xs Ys Ids ISs Ls TSs}
 	 %Pattern error
       else skip
       end
    end
-   P S Xs Ys ISs Ls TSs
+   P S Xs Ys Ids ISs Ls TSs
 in
    P={NewPort S}
    Xs={X}
    Ys={Y}
+   Ids={Id}
    ISs={IsSurface}
    Ls={Life}
    TSs ={TurnSurface}
-   thread {Loop S Xs Ys ISs Ls TSs} end
+   thread {Loop S Xs Ys Ids ISs Ls TSs} end
    P
 end
 
 %%%%%%%%% End setters and getters %%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%% Utilities  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Method used to check if the id passed is the same as the id of the current player
+fun {CheckId Id}
+   % get id check same return true ou false en fonction
+   true
+end
+%%%%%%%%% End utilities  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
    fun{StartPlayer Color ID} 
       Stream 
       Port 
-   in 
+   in
+      {System.show 'ICI'}
       PID = id(id:ID color:Color name:player000random)
       PLife = Input.maxDamage
       PTimeSurface = 0
@@ -156,11 +185,11 @@ end
    end
 
    proc{TreatStream Stream}
-      
+      % TODO partout faire appel à une méthode vérifiant si l'ID passé en param == à soit même 
       case Stream
       of nil then skip
       [] initPosition(ID Position)|T then
-	 X Y in
+	 X Y in % TODO Erreur peux être gen sur un ile (j'ai eu le cas ) :/
 	 X = ({OS.rand} mod Input.nColumn)+1
 	 Y = ({OS.rand} mod Input.nRow)+1
 	      

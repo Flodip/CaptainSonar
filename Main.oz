@@ -39,7 +39,7 @@ in
          TimeSurface in
          case Players#Colors of (Kind|T1)#(Color|T2) then
             %The time surface left before diving is 0 at the first turn
-            TimeSurfacePlayers = 0|TimeSurface
+	    TimeSurfacePlayers = 0|TimeSurface
             {PlayerManager.playerGenerator Kind Color N}|{IPR N+1 T1 T2 TimeSurface}
          else 
             TimeSurface = nil
@@ -68,7 +68,7 @@ in
 
    proc {PlayByTurn Players}
       case Players of P|T then
-         {System.show "---Player "#P#" turn---"}
+         {System.show '---Player "#P#" turn---'}
          ID Surface in
          {Send P isSurface(ID Surface)}
          %If Player at surface, he has to wait x turns before diving
