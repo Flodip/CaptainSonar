@@ -4,7 +4,7 @@ import
    OS
    System
 export 
-   portPlayer:StartPlayer 
+   portPlayer:LaunchServer
 define 
    %Setters and getters
    NewPortObj
@@ -17,6 +17,7 @@ define
    TurnSurface
    LaunchServer
 
+   Object
    %Util
    CheckId
    
@@ -77,7 +78,9 @@ end
 fun {Id}
    fun {Loop Msg Id}
       case Msg
-      of setId(N) then N
+      of setId(N) then
+	 {System.show'Id : '#N}
+	 N
       [] getId(N) then N = Id
 	 Id
       end
@@ -95,19 +98,21 @@ fun {IsSurface}
       end
    end
 in
-   {NewPortObj Loop false}
+   {NewPortObj Loop true}
 end
 
 fun {Life}
    fun {Loop Msg Life}
       case Msg
-      of setLife(N) then N
+      of setLife(N) then
+	 {System.show 'Life : '#N}
+	 N
       [] getLife(N) then N = Life
 	 Life
       end
    end
 in
-   {NewPortObj Loop 0}
+   {NewPortObj Loop Input.maxDamage}
 end
 
 fun {TurnSurface}
@@ -122,7 +127,7 @@ in
    {NewPortObj Loop 0}
 end
 
-fun {LaunchServer}
+fun {LaunchServer Color ID}
    proc {Loop S Xs Ys Ids ISs Ls TSs}
       case S
 	 %X setter+getter
@@ -148,8 +153,10 @@ fun {LaunchServer}
       end
    end
    P S Xs Ys Ids ISs Ls TSs
+   %Player vars
+   Stream Port
 in
-   P={NewPort S}
+   Object={NewPort S}
    Xs={X}
    Ys={Y}
    Ids={Id}
@@ -157,7 +164,20 @@ in
    Ls={Life}
    TSs ={TurnSurface}
    thread {Loop S Xs Ys Ids ISs Ls TSs} end
-   P
+   
+   %Starting up Object
+%   PID = id(id:ID color:Color name:player000random)
+   {Send Object setId(id(id:ID color:Color name:player000random))}
+   
+%   On init maxDamage is set to Input.maxDamage
+%   PLife = Input.maxDamage
+%   On init timeSurface is set to 0   
+%   PTimeSurface = 0
+%   On init PIsSurface is set to true
+%   PIsSurface = true
+   {NewPort Stream Port} 
+   thread {TreatStream Stream} end 
+   Port
 end
 
 %%%%%%%%% End setters and getters %%%%%%%%%%%%%%%%%%%%
@@ -169,20 +189,6 @@ fun {CheckId Id}
    true
 end
 %%%%%%%%% End utilities  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
-   fun{StartPlayer Color ID} 
-      Stream 
-      Port 
-   in
-      {System.show 'ICI'}
-      PID = id(id:ID color:Color name:player000random)
-      PLife = Input.maxDamage
-      PTimeSurface = 0
-      PIsSurface = true
-      {NewPort Stream Port} 
-      thread {TreatStream Stream} end 
-      Port 
-   end
 
    proc{TreatStream Stream}
       % TODO partout faire appel à une méthode vérifiant si l'ID passé en param == à soit même 
@@ -194,7 +200,7 @@ end
 	 Y = ({OS.rand} mod Input.nRow)+1
 	      
 	 Position = pt(x:X y:Y)
-	 ID = PID
+	 {Send Object getId(ID)}
       [] move(ID Position Direction)|T then
 	 if Direction == surface then 
 	    PIsSurface = true
