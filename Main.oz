@@ -6,7 +6,7 @@ import
    System
 define
    % Util Methods
-   IsNotGround
+   IsGround
    
    Judge
    ListPlayers
@@ -35,11 +35,24 @@ define
    BroadcastDeath
 in
 
-    %%%%%%%%%% Util  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-   fun {IsNotGround}
-      true
+   %%%%%%%%%% Util  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   fun {IsGround X Y}
+      fun {LoopX X M}
+	 if X == 1 then
+	    M.1
+	 else
+	    {LoopX X-1 M.2}
+	 end
+      end
+      fun {LoopY Y M}
+	 if Y == 1 then M.1 else {LoopY Y-1 M.2} end
+      end
+      Rep
+   in
+      Rep = {LoopY Y {LoopX X Input.map}}
+      Rep == 1
    end
+   
    %%%%%%%%%% End utilities %%%%%%%%%%%%%%%%%%%%%
 
    %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
