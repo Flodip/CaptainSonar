@@ -38,41 +38,41 @@ in
 				X Y in
 				X = ({OS.rand} mod Input.nColumn)+1
 				Y = ({OS.rand} mod Input.nRow)+1
-
-				Position = pt(x:X y:Y)
-				ID = PID
-				{Loop T PID PLife PTimeSurface PIsSurface Position}
+			   
+			   Position = pt(x:X y:Y)
+			   ID = PID
+			   {Loop T PID PLife PTimeSurface PIsSurface Position}
 			[] move(ID Position Direction)|T then
-				D in
-				D = {OS.rand} mod 5
-
-				if D == 0 then
-					Direction = surface
-					Position = PPosition
-
-					{Loop T PID PLife Input.turnSurface true PPosition}
-				else
-					X Y in
-					X = Position.x
-					Y = Position.y
-
-					case D of 1 then
-						Direction = east
-						Position = pt(x:X y:Y+1)
-					[] 2 then 
-						Direction = west
-						Position = pt(x:X y:Y-1)
-					[] 3 then 
-						Direction = north
-						Position = pt(x:X-1 y:Y)
-					[] 4 then 
-						Direction = south
-						Position = pt(x:X+1 y:Y)
+			   D in
+			   D = {OS.rand} mod 5
+			   
+			   if D == 0 then
+			      Direction = surface
+			      Position = PPosition
+			      
+			      {Loop T PID PLife Input.turnSurface true PPosition}
+			   else
+			      X Y in
+			      X = Position.x
+			      Y = Position.y
+			      
+			      case D of 1 then
+				 Direction = east
+				 Position = pt(x:X y:Y+1)
+			      [] 2 then 
+				 Direction = west
+				 Position = pt(x:X y:Y-1)
+			      [] 3 then 
+				 Direction = north
+				 Position = pt(x:X-1 y:Y)
+			      [] 4 then 
+					   Direction = south
+				 Position = pt(x:X+1 y:Y)
 					else skip
-					end
-
+			      end
+			      
 					{Loop T PID PLife PTimeSurface PIsSurface Position}
-				end
+			   end
 			[] dive|T then skip
 			[] chargeItem(ID KindItem)|T then skip
 			[] fireItem(ID KindFire)|T then skip

@@ -78,12 +78,20 @@ in
       %TODO Check + impl isNotGround methds
       %loops through each Players and asks them their initial Pos
       proc {IPPR Players}
-         Pos ID in
+         Pos ID Ground in
          case Players of nil then skip
          [] P|T then 
-            {Send P initPosition(ID Pos)}
-            {Send Judge initPlayer(ID Pos)}
-            {IPPR T}
+	    {Send P initPosition(ID Pos)}
+	    {Wait ID}
+	    Ground = {IsGround Pos.x Pos.y}
+	    %{System.show Ground}
+	    %{System.show Pos}
+	    if Ground == true then
+	       {IPPR P|T}
+	    else
+	       {Send Judge initPlayer(ID Pos)}
+	       {IPPR T}
+	    end
          else skip
          end
       end
