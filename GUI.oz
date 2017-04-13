@@ -13,30 +13,30 @@ define
    RemoveItem
    RemovePath
    RemovePlayer
-
+   
    Map = Input.map
    
    NRow = Input.nRow
    NColumn = Input.nColumn
-
+   
    
    DrawSubmarine
    MoveSubmarine
    DrawMine
    RemoveMine
    DrawPath
-
+   
    BuildWindow
    
    Label
    Squares
    DrawMap
-
+   
    StateModification
-
+   
    UpdateLife
 in
-
+   
 %%%%% Build the initial window and set it up (call only once)
    fun{BuildWindow}
       Grid GridScore Toolbar Desc DescScore Window
@@ -45,9 +45,9 @@ in
       Desc=grid(handle:Grid height:500 width:500)
       DescScore=grid(handle:GridScore height:100 width:500)
       Window={QTk.build td(Toolbar Desc DescScore)}
-  
+      
       {Window show}
-
+      
       % configure rows and set headers
       {Grid rowconfigure(1 minsize:50 weight:0 pad:5)}
       for N in 1..NRow do
@@ -70,13 +70,13 @@ in
       
       handle(grid:Grid score:GridScore)
    end
-
+   
    
 %%%%% Squares of water and island
    Squares = square(0:label(text:"" width:1 height:1 bg:c(102 102 255))
 		    1:label(text:"" borderwidth:5 relief:raised width:1 height:1 bg:c(153 76 0))
 		   )
-
+   
 %%%%% Labels for rows and columns
    fun{Label V}
       label(text:V borderwidth:5 relief:raised bg:c(255 51 51) ipadx:5 ipady:5)
@@ -103,7 +103,7 @@ in
    in
       {DrawRow Map 1}
    end
-
+   
 %%%%% Init the submarine
    fun{DrawSubmarine Grid ID Position}
       Handle HandlePath HandleScore X Y Id Color LabelSub LabelScore
@@ -136,7 +136,7 @@ in
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:NewPath|Path)
       end
    end
-  
+   
    fun{DrawMine Position}
       fun{$ Grid State}
 	 ID HandleScore Handle Mine Path LabelMine HandleMine X Y
@@ -150,14 +150,14 @@ in
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
       end
    end
-
+   
    local
       fun{RmMine Grid Position List}
 	 case List
 	 of nil then nil
 	 [] H|T then
-	    if (H == Position) then
-	       {RemoveItem Grid H}
+	    if (H.2 == Position) then
+	       {RemoveItem Grid H.1}
 	       T
 	    else
 	       H|{RmMine Grid Position T}
@@ -187,8 +187,8 @@ in
    proc{RemoveItem Grid Handle}
       {Grid.grid forget(Handle)}
    end
-
-      
+   
+   
    fun{RemovePath Grid State}
       ID HandleScore Handle Mine Path
    in
@@ -198,7 +198,7 @@ in
       end
       guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:Path.1|nil)
    end
-
+   
    fun{UpdateLife Life}
       fun{$ Grid State}
 	 HandleScore
@@ -208,8 +208,8 @@ in
 	 State
       end
    end
-
-
+   
+   
    fun{StateModification Grid WantedID State Fun}
       case State
       of nil then nil
@@ -222,7 +222,7 @@ in
       end
    end
 
-
+   
    fun{RemovePlayer Grid WantedID State}
       case State
       of nil then nil
@@ -242,7 +242,7 @@ in
 	 end
       end
    end
-
+   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    fun{StartWindow}
@@ -255,7 +255,7 @@ in
       end
       Port
    end
-
+   
    proc{TreatStream Stream Grid State}
       case Stream
       of nil then skip
@@ -287,9 +287,5 @@ in
       [] _|T then
 	 {TreatStream T Grid State}
       end
-   end
-   
-  
-
-   
+   end   
 end

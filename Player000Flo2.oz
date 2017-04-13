@@ -24,11 +24,6 @@ in
 		thread {TreatStream Stream PID PLife PTimeSurface PIsSurface} end 
 		Port 
 	end
-
-	%Position type: pt(x:X y:Y)
-	fun{IsGround Position}
-		true
-	end
 	
 	proc{TreatStream StreamInit PIDInit PLifeInit PTimeSurfaceInit PIsSurfaceInit}
 		proc {Loop Stream PID PLife PTimeSurface PIsSurface PPosition}
