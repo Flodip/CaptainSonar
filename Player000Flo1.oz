@@ -69,7 +69,7 @@ in
 	    if D == 0 then
 	       Direction = surface
 	       Position = PPosition
-	       
+	       ID=PID
 	       {Loop T PID PLife Input.turnSurface true PPosition PItemsCharge PItems}
 	    else
 	       X Y Pos Dir in
@@ -92,9 +92,11 @@ in
 	       end
 	       if {And {Not {IsGround Pos}} {IsInBounds Pos}} then
 	          Direction = Dir
-	          Position = Pos
+		  Position = Pos
+		  ID=PID
 	          {Loop T PID PLife PTimeSurface PIsSurface Position PItemsCharge PItems}
 	       else
+		  ID=PID
 	          {Loop Stream PID PLife PTimeSurface PIsSurface PPosition PItemsCharge PItems}
 	       end
 	    end

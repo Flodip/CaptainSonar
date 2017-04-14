@@ -115,9 +115,10 @@ in
 	       {Send P dive}
 	    else Time = TimeSurface-1 end
 	 else
-	    ID Position Direction in
+	    ID Position Direction IDTmp in
 	    {Send P move(ID Position Direction)}
-	    {Wait Position}
+	    {Wait ID}
+	    IDTmp = ID
 	    {System.show Position}
 	    {System.show Direction}
             %Ask Player if he wants to move or dive
@@ -126,11 +127,12 @@ in
 	       {BroadcastSurface T ID}
 	       Time = Input.turnSurface
 	    else
+	       {System.show IDTmp}
 	       if {IsGround Position} == true then
 		  {System.show 'error ground move, replay'}
 		  {PlayByTurn Players TimeSurfacePlayers}
 	       else
-		  {Send Judge movePlayer(ID Position)}
+		  {Send Judge movePlayer(IDTmp Position)}
 		  {BroadcastMove T ID Position}
 		  
                   %Can charge an item
