@@ -123,17 +123,17 @@ in
 	    {System.show Direction}
             %Ask Player if he wants to move or dive
 	    if Direction == surface then 
-	       {Send Judge surface(ID)}
-	       {BroadcastSurface T ID}
+	       {Send Judge surface(IDTmp)}
+	       {BroadcastSurface T IDTmp}
 	       Time = Input.turnSurface
 	    else
-	       {System.show IDTmp}
+	       %{System.show IDTmp}
 	       if {IsGround Position} == true then
 		  {System.show 'error ground move, replay'}
 		  {PlayByTurn Players TimeSurfacePlayers}
 	       else
 		  {Send Judge movePlayer(IDTmp Position)}
-		  {BroadcastMove T ID Position}
+		  {BroadcastMove T IDTmp Position}
 		  
                   %Can charge an item
 		  ID KindItem in
