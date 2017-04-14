@@ -133,7 +133,7 @@ in
 		  end
 		  
                   %Can fire an item
-		  ID KindItem Position Drone Msg in
+		 /* ID KindItem Position Drone Msg in
 		  {Send P fireItem(ID KindItem)}
 		  case KindItem of null then skip
 		  [] mine(Position) then
@@ -147,7 +147,7 @@ in
 		  [] sonar then skip %TODO
 		  else skip 
                   end
-		  
+		  */
                   %Can Blow up Mine
                   %TODO
 	       end
