@@ -23,19 +23,29 @@ in
 
    fun {IsGround Position}
       fun {LoopX X M}
-         if X == 1 then
-            M.1
-         else
+	if X == 1 then
+	    M.1
+	 else
             {LoopX X-1 M.2}
          end
       end
       fun {LoopY Y M}
-         if Y == 1 then M.1 else {LoopY Y-1 M.2} end
+         if Y < 1 then 1 elseif Y == 1 then M.1 else {LoopY Y-1 M.2} end
       end
    in
-      {LoopY Position.y {LoopX Position.x Input.map}} == 1
+      if Position.x < 1 then
+	 true
+      elseif Position.y < 1 then
+	 true
+      elseif Position.x > Input.nRow then 
+	 true
+      elseif Position.y > Input.nColumn then 
+	 true
+      else
+	 {LoopY Position.y {LoopX Position.x Input.map}} == 1
+      end
    end
-
+   
    fun {IsInBounds Position}
       {And Position.x =< Input.nRow Position.y =< Input.nColumn}
    end
@@ -80,7 +90,6 @@ in
 		  Pos = pt(x:X+1 y:Y)
 	       else skip
 	       end
-	       
 	       if {And {Not {IsGround Pos}} {IsInBounds Pos}} then
 	          Direction = Dir
 	          Position = Pos
