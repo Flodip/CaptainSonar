@@ -5,8 +5,7 @@ import
    PlayerManager
    System
 define
-   % Util Methods
-   IsGround
+   IsCorrectMove
    
    Judge
    ListPlayers
@@ -36,7 +35,7 @@ define
 in
 
 %%%%%%%%%% Util  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fun {IsGround Position}
+    fun {IsCorrectMove Position}
       fun {LoopX X M}
 	if X == 1 then
 	    M.1
@@ -49,15 +48,15 @@ in
       end
    in
       if Position.x < 1 then
-	 true
+	 false
       elseif Position.y < 1 then
-	 true
+	 false
       elseif Position.x > Input.nRow then 
-	 true
+	 false
       elseif Position.y > Input.nColumn then 
-	 true
+	 false
       else
-	 {LoopY Position.y {LoopX Position.x Input.map}} == 1
+	 {LoopY Position.y {LoopX Position.x Input.map}} == 0
       end
    end
    
@@ -89,8 +88,10 @@ in
          case Players of nil then skip
          [] P|T then 
             {Send P initPosition(ID Pos)}
-            if {IsGround Pos} == true then
+            %The position is incorrect, asked a new one
+            if {Not {IsCorrectMove Pos}} then
                {IPPR Players}
+            %The position is sent to the GUI and asks the next player
             else
                {Send Judge initPlayer(ID Pos)}
                {IPPR T}
@@ -106,9 +107,7 @@ in
       case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
 	 ID Surface Time in
 	 {Send P isSurface(ID Surface)}
-	 {System.show '---Player---'}
-	 {System.show ID.id}
-	 {System.show '------------'}
+	 {System.show '-------Player'#ID.id}
          %If Player at surface, he has to wait x turns before diving
 	 if Surface then
 	    if TimeSurface == 0 then
@@ -119,8 +118,6 @@ in
 	    {Send P move(ID Position Direction)}
 	    {Wait ID}
 	    IDTmp = ID
-	    {System.show Position}
-	    {System.show Direction}
             %Ask Player if he wants to move or dive
 	    if Direction == surface then 
 	       {Send Judge surface(IDTmp)}
@@ -128,38 +125,41 @@ in
 	       Time = Input.turnSurface
 	    else
 	       %{System.show IDTmp}
-	       if {IsGround Position} == true then
-		  {System.show 'error ground move, replay'}
+	       if {Not {IsCorrectMove Position}} then
 		  {PlayByTurn Players TimeSurfacePlayers}
 	       else
 		  {Send Judge movePlayer(IDTmp Position)}
 		  {BroadcastMove T IDTmp Position}
 		  
                   %Can charge an item
-		  ID KindItem in
-		  {Send P chargeItem(ID KindItem)}
-		  if KindItem == null then
-		     skip
-		  else
-		     {BroadcastCharge T ID KindItem}
-		  end
+		  local ID KindItem in
+		     {Send P chargeItem(ID KindItem)}
+                     {Wait KindItem}
+		     if KindItem == null then
+		        skip
+		     else
+		        {BroadcastCharge T ID KindItem}
+		     end
+                  end
 		  
                   %Can fire an item
-		 /* ID KindItem Position Drone Msg in
-		  {Send P fireItem(ID KindItem)}
-		  case KindItem of null then skip
-		  [] mine(Position) then
-		     {BroadcastMinePlaced T ID}
-		  [] missile(Position) then
-		     {BroadcastMissileExplode T ID Position Msg}
+                  %We dont check if the player has enough charges
+		  local ID KindItem Position Drone Msg in
+		     {Send P fireItem(ID KindItem)}
+                     {Wait KindItem}
+		     case KindItem of null then skip
+		     [] mine(Position) then
+		        {BroadcastMinePlaced T ID}
+		     [] missile(Position) then
+		        {BroadcastMissileExplode T ID Position Msg}
 %%%%%
                      %TODO Treat Msg
 %%%%%
-		  [] Drone then skip %TODO
-		  [] sonar then skip %TODO
-		  else skip 
+		     [] Drone then skip %TODO
+		     [] sonar then skip %TODO
+		     else skip 
+                     end
                   end
-		  */
                   %Can Blow up Mine
                   %TODO
 	       end
@@ -280,7 +280,6 @@ in
    ListPlayers = {InitPlayers}
    {System.show 'Players Port initialized'}
    %Player initial position
-   {System.show 'Starting player pos initialization'}
    {InitPosPlayers}
    {System.show 'Players Pos initialized'}
    
