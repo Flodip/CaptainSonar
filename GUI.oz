@@ -3,10 +3,15 @@ import
    QTk at 'x-oz://system/wp/QTk.ozf'
    Input
    System
+    OS
 export
    portWindow:StartWindow
 define
    
+    Canvas
+    MainURL={OS.getCWD}
+   Img_water = {QTk.newImage photo(url:MainURL#"/images/water.gif")}
+   Img_ground = {QTk.newImage photo(url:MainURL#"/images/dirt.gif")}
    StartWindow
    TreatStream
    
@@ -73,8 +78,8 @@ in
    
    
 %%%%% Squares of water and island
-   Squares = square(0:label(text:"" width:1 height:1 bg:c(102 102 255))
-		    1:label(text:"" borderwidth:5 relief:raised width:1 height:1 bg:c(153 76 0))
+   Squares = square(0:label(text:"" width:2 height:2 image:Img_water)
+		    1:label(text:"" width:2 height:2 image:Img_ground)
 		   )
    
 %%%%% Labels for rows and columns
