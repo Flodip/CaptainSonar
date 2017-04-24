@@ -37,183 +37,195 @@ in
 %%%%%%%%%% Util  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fun {IsCorrectMove Position}
       fun {LoopX X M}
-	if X == 1 then
+	 if X == 1 then
 	    M.1
 	 else
-            {LoopX X-1 M.2}
-         end
+	    {LoopX X-1 M.2}
+	 end
       end
       fun {LoopY Y M}
-         if Y < 1 then 1 elseif Y == 1 then M.1 else {LoopY Y-1 M.2} end
+	 if Y < 1 then 1 elseif Y == 1 then M.1 else {LoopY Y-1 M.2} end
       end
-   in
-      if Position.x < 1 then
-	 false
-      elseif Position.y < 1 then
-	 false
-      elseif Position.x > Input.nRow then 
-	 false
-      elseif Position.y > Input.nColumn then 
-	 false
-      else
-	 {LoopY Position.y {LoopX Position.x Input.map}} == 0
-      end
-   end
-   
+    in
+       if Position.x < 1 then
+	  false
+       elseif Position.y < 1 then
+	  false
+       elseif Position.x > Input.nRow then 
+	  false
+       elseif Position.y > Input.nColumn then 
+	  false
+       else
+	  {LoopY Position.y {LoopX Position.x Input.map}} == 0
+       end
+    end
+    
 %%%%%%%%%% End utilities %%%%%%%%%%%%%%%%%%%%%
-   
+    
 %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
-   fun {InitPlayers}
+    
+    fun {InitPlayers}
       %loops through each Players and Colors from Input and associates them
-      fun {IPR N Players Colors TimeSurfacePlayers}
-         TimeSurface in
-         case Players#Colors of (Kind|T1)#(Color|T2) then
+       fun {IPR N Players Colors TimeSurfacePlayers}
+	  TimeSurface in
+	  case Players#Colors of (Kind|T1)#(Color|T2) then
             %The time surface left before diving is 0 at the first turn
-            TimeSurfacePlayers = 0|TimeSurface
-            {PlayerManager.playerGenerator Kind Color N}|{IPR N+1 T1 T2 TimeSurface}
-         else 
-            TimeSurfacePlayers = nil
-            nil
-         end
-      end
-   in
-      {IPR 1 Input.players Input.colors ListTimeSurfacePlayers}
-   end
-   
-   proc {InitPosPlayers}
+	     TimeSurfacePlayers = 1|TimeSurface
+	     {PlayerManager.playerGenerator Kind Color N}|{IPR N+1 T1 T2 TimeSurface}
+	  else 
+	     TimeSurfacePlayers = nil
+	     nil
+	  end
+       end
+    in
+       {IPR 1 Input.players Input.colors ListTimeSurfacePlayers}
+    end
+    
+    proc {InitPosPlayers}
       %loops through each Players and asks them their initial Pos
-      proc {IPPR Players}
-         Pos ID in
-         case Players of nil then skip
-         [] P|T then 
-            {Send P initPosition(ID Pos)}
+       proc {IPPR Players}
+	  Pos ID in
+	  case Players of nil then skip
+	  [] P|T then 
+	     {Send P initPosition(ID Pos)}
             %The position is incorrect, asked a new one
-            if {Not {IsCorrectMove Pos}} then
-               {IPPR Players}
+	     if {Not {IsCorrectMove Pos}} then
+		{IPPR Players}
             %The position is sent to the GUI and asks the next player
-            else
-               {Send Judge initPlayer(ID Pos)}
-               {IPPR T}
-            end
-         else skip
-         end
-      end
+	     else
+		{Send Judge initPlayer(ID Pos)}
+		{IPPR T}
+	     end
+	  else skip
+	  end
+       end
    in
-      {IPPR ListPlayers}
-   end
-   
-   proc {PlayByTurn Players TimeSurfacePlayers}
-      case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
-	 ID Surface Time in
-	 {Send P isSurface(ID Surface)}
-	 {System.show '-------Player'#ID.id}
+       {IPPR ListPlayers}
+    end
+    
+    proc {PlayByTurn Players TimeSurfacePlayers}
+       case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
+	  if P == null then
+	     skip
+            %Player dead
+	  else
+	     ID Surface Time in
+	     {Send P isSurface(ID Surface)}
+	     {System.show '-------Player'#ID.id}
          %If Player at surface, he has to wait x turns before diving
-	 if Surface then
-	    if TimeSurface == 0 then
-	       {Send P dive}
-	    else Time = TimeSurface-1 end
-	 else
-	    ID Position Direction IDTmp in
-	    {Send P move(ID Position Direction)}
-	    {Wait ID}
+	     if Surface then
+		if TimeSurface == 1 then
+		   {Send P dive}
+		else Time = TimeSurface-1 end
+	     else
+		ID Position Direction IDTmp in
+		{Send P move(ID Position Direction)}
+		{Wait ID}
 	    IDTmp = ID
             %Ask Player if he wants to move or dive
-	    if Direction == surface then 
-	       {Send Judge surface(IDTmp)}
-	       {BroadcastSurface T IDTmp}
-	       Time = Input.turnSurface
-	    else
+		if Direction == surface then 
+		   {Send Judge surface(IDTmp)}
+		   {BroadcastSurface T IDTmp}
+		   Time = Input.turnSurface-1
+		else
 	       %{System.show IDTmp}
-	       if {Not {IsCorrectMove Position}} then
-		  {PlayByTurn Players TimeSurfacePlayers}
-	       else
-		  {Send Judge movePlayer(IDTmp Position)}
-		  {BroadcastMove T IDTmp Position}
-		  
+		   if {Not {IsCorrectMove Position}} then
+		      {PlayByTurn Players TimeSurfacePlayers}
+		   else
+		      {Send Judge movePlayer(IDTmp Position)}
+		      {BroadcastMove T IDTmp Position}
+		      
                   %Can charge an item
-		  local ID KindItem in
-		     {Send P chargeItem(ID KindItem)}
-                     {Wait KindItem}
-		     if KindItem == null then
-		        skip
-		     else
-		        {BroadcastCharge T ID KindItem}
-		     end
-                  end
-		  
+		      local ID KindItem in
+			 {Send P chargeItem(ID KindItem)}
+			 {Wait KindItem}
+			 if KindItem == null then
+			    skip
+			 else
+			    {BroadcastCharge T ID KindItem}
+			 end
+		      end
+		      
                   %Can fire an item
                   %We dont check if the player has enough charges
-		  local ID KindItem Position Drone Msg in
-		     {Send P fireItem(ID KindItem)}
-                     {Wait KindItem}
-		     case KindItem of null then skip
-		     [] mine(Position) then
-		        {BroadcastMinePlaced T ID}
-		     [] missile(Position) then
-		        {BroadcastMissileExplode T ID Position Msg}
-%%%%%
-                     %TODO Treat Msg
-%%%%%
-		     [] Drone then skip %TODO
-		     [] sonar then skip %TODO
-		     else skip 
-                     end
-                  end
+		      local ID KindItem Position Drone Msg in
+			 {Send P fireItem(ID KindItem)}
+			 {Wait KindItem}
+			 case KindItem of null then skip
+			 [] mine(Position) then
+			    {BroadcastMinePlaced T ID}
+			 [] missile(Position) then
+			    {BroadcastMissileExplode T ID Position Msg}
+			 [] sonar then skip %TODO
+			 [] drone then skip %TODO
+			 else skip 
+			 end
+		      end
+		      
                   %Can Blow up Mine
-                  %TODO
-	       end
-	    end
-	 end
+		      local ID Mine in
+                     %{Send P fireMine(?ID ?Mine)}
+			 Mine = null
+			 if Mine == null then
+			    skip
+			 else
+			    skip
+                        %{BroadcastMineExplode T Mine }
+			 end
+		      end
+		   end
+		end
+	     end
+	  end
          %Player put at the end of the list, and we begin the next player's turn
-        {Delay 500}
-        {PlayByTurn {Append T P|nil} {Append TimeT Time|nil}}
-      end
-   end
-
+         {Delay 300}
+	  {PlayByTurn {Append T P|nil} {Append TimeT Time|nil}}
+       end
+    end
+    
 %%%%%%%%%% END MAIN METHODS %%%%%%%%%%%%%%%%%%
-   
-   
+    
+    
 %%%%%%%%%% MISC METHODS %%%%%%%%%%%%%%%%%%%%%%
    
-   fun {GetTimeSurface ID}
-      fun {GTSr IDr TimeSurfacePlayers}
-         case TimeSurfacePlayers of nil then nil
-         [] H|T then
-            if IDr == 1 then H
-            else {GTSr IDr-1 T} end
+    fun {GetTimeSurface ID}
+       fun {GTSr IDr TimeSurfacePlayers}
+	  case TimeSurfacePlayers of nil then nil
+	  [] H|T then
+	     if IDr == 1 then H
+	     else {GTSr IDr-1 T} end
+	  end
+       end
+    in
+       {GTSr ID.id ListTimeSurfacePlayers}
+    end
+    
+    proc {SetTimeSurface ID TimeSurface}
+       Tmp = nil
+       proc {STSr IDr TimeSurfacePlayers}
+	  case TimeSurfacePlayers of nil then skip
+	  [] H|T then
+	     if IDr == 1 then ListTimeSurfacePlayers = {Append Tmp Input.turSurface|T}
+	     else {STSr IDr-1 T} end
          end
-      end
-   in
-      {GTSr ID.id ListTimeSurfacePlayers}
-   end
-   
-   proc {SetTimeSurface ID TimeSurface}
-      Tmp = nil
-      proc {STSr IDr TimeSurfacePlayers}
-         case TimeSurfacePlayers of nil then skip
-         [] H|T then
-            if IDr == 1 then ListTimeSurfacePlayers = {Append Tmp Input.turSurface|T}
-            else {STSr IDr-1 T} end
-         end
-      end
-   in
+       end
+    in
       {STSr ID.id ListTimeSurfacePlayers}
-   end
+    end
    
 %%%%%%%%%% END MISC METHODS %%%%%%%%%%%%%%%%%%
    
-  
+    
 %%%%%%%%%% BROADCAST METHODS %%%%%%%%%%%%%%%%%
-
+    
    % Broadcast message Msg to players in Players
    proc {Broadcast Msg Players}
       proc {Br L}
-         case L of nil then skip
-         [] H|T then
+	 case L of nil then skip
+	 [] H|T then
             {Send H Msg}
-            {Br T}
-         end
+	    {Br T}
+	 end
       end
    in
       {Br Players}
