@@ -84,7 +84,7 @@ in
    
 %%%%% Labels for rows and columns
    fun{Label V}
-      label(text:V borderwidth:5 relief:raised bg:c(255 51 51) ipadx:5 ipady:5)
+      label(text:V borderwidth:5 relief:groove bg:c(60 138 247) ipadx:5 ipady:5)
    end
    
 %%%%% Function to draw the map
