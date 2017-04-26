@@ -181,7 +181,7 @@ in
 	     end
 	  end
          %Player put at the end of the list, and we begin the next player's turn
-         {Delay 300}
+         %{Delay 300}
 	  {PlayByTurn {Append T P|nil} {Append TimeT Time|nil}}
        end
     end
