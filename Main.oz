@@ -110,33 +110,33 @@ in
 	  else skip
 	  end
        end
-   in
+    in
        {IPPR ListPlayers}
     end
 
-	proc {PlaySimultaneous Players TimeSurfacePlayers}
-		{System.show Players}
-		case Players
-		of H|T then
-			thread {MainGame H|nil TimeSurfacePlayers} end
-			{PlaySimultaneous T TimeSurfacePlayers}
+    proc {PlaySimultaneous Players TimeSurfacePlayers}
+       {System.show Players}
+       case Players
+       of H|T then
+	  thread {MainGame H|nil TimeSurfacePlayers} end
+	  {PlaySimultaneous T TimeSurfacePlayers}
 		else skip
-		end
-	end
-
-  proc {MainGame Players TimeSurfacePlayers}
-    if Input.isTurnByTurn == false then
-      {SimulateThinking}
+       end
     end
-     case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
+
+    proc {MainGame Players TimeSurfacePlayers}
+       if Input.isTurnByTurn == false then
+	       {SimulateThinking}
+       end
+       case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
           Time in
           %Player dead
 	  if P == null then
-             Time = null
+	     Time = null
 	     skip
           %Player still alive
 	  else
-             ID Surface in
+	     ID Surface in
 	     {Send P isSurface(ID Surface)}
 	     {System.show '-------Player'#ID.id}
              %If Player at surface, he has to wait x turns before diving
@@ -148,14 +148,14 @@ in
 		ID Position Direction IDTmp in
 		{Send P move(ID Position Direction)}
 		{Wait ID}
-	        IDTmp = ID
+		IDTmp = ID
             %Ask Player if he wants to move or dive
 		if Direction == surface then
 		   {Send Judge surface(IDTmp)}
 		   {BroadcastSurface T IDTmp}
 		   Time = Input.turnSurface-1
 		else
-	           Time = TimeSurface
+		   Time = TimeSurface
 		   if {Not {IsCorrectMove Position}} then
 		      {MainGame Players TimeSurfacePlayers}
 		   else
@@ -181,6 +181,7 @@ in
 			 case KindItem of null then skip
 			 [] mine(Position) then
 			    {BroadcastMinePlaced T ID}
+          {Send Judge putMine(ID Position)}
 			 [] missile(Position) then
 			    {BroadcastMissileExplode T ID Position Msg}
 			 [] sonar then skip %TODO
@@ -205,7 +206,7 @@ in
 	     end
 	  end
          %Player put at the end of the list, and we begin the next player's turn
-         {Delay 300}
+	  {Delay 300}
 	  {MainGame {Append T P|nil} {Append TimeT Time|nil}}
        end
     end
@@ -234,10 +235,10 @@ in
 	  [] H|T then
 	     if IDr == 1 then ListTimeSurfacePlayers = {Append Tmp Input.turSurface|T}
 	     else {STSr IDr-1 T} end
-         end
+	  end
        end
     in
-      {STSr ID.id ListTimeSurfacePlayers}
+       {STSr ID.id ListTimeSurfacePlayers}
     end
 
 %%%%%%%%%% END MISC METHODS %%%%%%%%%%%%%%%%%%
@@ -246,61 +247,61 @@ in
 %%%%%%%%%% BROADCAST METHODS %%%%%%%%%%%%%%%%%
 
    % Broadcast message Msg to players in Players
-   proc {Broadcast Msg Players}
-      proc {Br L}
-	 case L of nil then skip
-	 [] H|T then
-            {Send H Msg}
+    proc {Broadcast Msg Players}
+       proc {Br L}
+	  case L of nil then skip
+	  [] H|T then
+	     {Send H Msg}
 	    {Br T}
-	 end
-      end
-   in
-      {Br Players}
+	  end
+       end
+    in
+       {Br Players}
+    end
+
+    proc {BroadcastMove Players ID Position}
+       {Broadcast sayMove(ID Position) Players}
+    end
+
+    proc {BroadcastSurface Players ID}
+       {Broadcast saySurface(ID) Players}
    end
 
-   proc {BroadcastMove Players ID Position}
-      {Broadcast sayMove(ID Position) Players}
+    proc {BroadcastCharge Players ID KindItem}
+       {Broadcast sayCharge(ID KindItem) Players}
+    end
+
+    proc {BroadcastMinePlaced Players ID}
+       {Broadcast sayMinePlaced(ID) Players}
    end
 
-   proc {BroadcastSurface Players ID}
-      {Broadcast saySurface(ID) Players}
-   end
+    proc {BroadcastMissileExplode Players ID Position Message}
+       {Broadcast sayMissileExplode(ID Position Message) Players}
+    end
 
-   proc {BroadcastCharge Players ID KindItem}
-      {Broadcast sayCharge(ID KindItem) Players}
-   end
+    proc {BroadcastMineExplode Players ID Position Message}
+       {Broadcast sayMineExplode(ID Position Message) Players}
+    end
 
-   proc {BroadcastMinePlaced Players ID}
-      {Broadcast sayMinePlaced(ID) Players}
-   end
-
-   proc {BroadcastMissileExplode Players ID Position Message}
-      {Broadcast sayMissileExplode(ID Position Message) Players}
-   end
-
-   proc {BroadcastMineExplode Players ID Position Message}
-      {Broadcast sayMineExplode(ID Position Message) Players}
-   end
-
-   proc {BroadcastPassingDrone Players Drone ID Answer}
+    proc {BroadcastPassingDrone Players Drone ID Answer}
       {Broadcast sayPassingDrone(Drone ID Answer) Players}
-   end
+    end
 
-   proc {BroadcastAnswerDrone Players Drone ID Answer}
-      {Broadcast sayAnswerDrone(Drone ID Answer) Players}
-   end
+    proc {BroadcastAnswerDrone Players Drone ID Answer}
+       {Broadcast sayAnswerDrone(Drone ID Answer) Players}
+    end
 
-   proc {BroadcastPassingSonar Players ID Answer}
-      {Broadcast sayPassingSonar(ID Answer) Players}
-   end
+    proc {BroadcastPassingSonar Players ID Answer}
+       {Broadcast sayPassingSonar(ID Answer) Players}
+    end
 
-   proc {BroadcastAnswerSonar Players ID Answer}
-      {Broadcast sayAnswerSonar(ID Answer) Players}
-   end
+    proc {BroadcastAnswerSonar Players ID Answer}
+       {Broadcast sayAnswerSonar(ID Answer) Players}
+    end
 
-   proc {BroadcastDeath Players ID}
-      {Broadcast sayDeath(ID) Players}
-   end
+    proc {BroadcastDeath Players ID}
+       {Broadcast sayDeath(ID) Players}
+    end
 
    proc {BroadcastDamageTaken Players ID LifeLeft}
       {Broadcast sayDamageTaken(ID LifeLeft) Players}

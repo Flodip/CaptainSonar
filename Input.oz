@@ -69,8 +69,8 @@ in
 
 %%%% Thinking parameters (only in simultaneous) %%%%
 
-   ThinkMin = 500
-   ThinkMax = 3000
+   ThinkMin = 50
+   ThinkMax = 300
 
 %%%% Surface time/turns %%%%
 
