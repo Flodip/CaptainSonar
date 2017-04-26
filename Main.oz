@@ -6,6 +6,7 @@ import
    System
    OS
 define
+   Command Args Stdin Stdout Pid % Music
    IsCorrectMove
    SimulateThinking
 
@@ -314,6 +315,10 @@ in
 
    %Port GUI init and display Window
    Judge = {GUI.portWindow}
+   Command = play
+   Args = './sounds/test.mp3'|nil
+   {OS.pipe Command Args Pid Stdin#Stdout}
+   
    {Send Judge buildWindow}
    {System.show 'Window initialized'}
 
