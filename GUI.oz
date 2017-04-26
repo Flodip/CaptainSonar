@@ -12,6 +12,7 @@ define
     MainURL={OS.getCWD}
    Img_water = {QTk.newImage photo(url:MainURL#"/images/water.gif")}
    Img_ground = {QTk.newImage photo(url:MainURL#"/images/dirt.gif")}
+   Img_sub = {QTk.newImage photo(url:MainURL#"/images/sub.gif")}
    StartWindow
    TreatStream
    
@@ -84,7 +85,7 @@ in
    
 %%%%% Labels for rows and columns
    fun{Label V}
-      label(text:V borderwidth:5 relief:groove bg:c(60 138 247) ipadx:5 ipady:5)
+      label(text:V borderwidth:5 relief:groove bg:c(55 136 253) ipadx:5 ipady:5)
    end
    
 %%%%% Function to draw the map
@@ -116,7 +117,7 @@ in
       pt(x:X y:Y) = Position
       id(id:Id color:Color name:_) = ID
       
-      LabelSub = label(text:"S" handle:Handle borderwidth:5 relief:raised bg:Color ipadx:5 ipady:5)
+      LabelSub = label(text:"S" handle:Handle relief:raised image:Img_sub bg:Color)
       LabelScore = label(text:Input.maxDamage borderwidth:5 handle:HandleScore relief:solid bg:Color ipadx:5 ipady:5)
       HandlePath = {DrawPath Grid Color X Y}
       {Grid.grid configure(LabelSub row:X+1 column:Y+1 sticky:wesn)}
