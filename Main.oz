@@ -181,7 +181,9 @@ in
 			 case KindItem of null then skip
 			 [] mine(Position) then
 			    {BroadcastMinePlaced T ID}
-          {Send Judge putMine(ID Position)}
+			    {System.show 'MINE'}
+			    {System.show KindItem}
+			    {Send Judge putMine(ID KindItem.1)}
 			 [] missile(Position) then
 			    {BroadcastMissileExplode T ID Position Msg}
 			 [] sonar then skip %TODO

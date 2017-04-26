@@ -252,24 +252,28 @@ in
 
 	    {Loop T PID PLife PIsSurface PPosition ItemsC Items PMines PPathHistoric}
 	 [] fireItem(ID KindFire)|T then
-	    X Y Position in
+	    X Y Position CoordAtk in
 	    case PItems of
-	    it(missile:1 mine:0 sonar:0 drone:0) then
-	    ID = PID
-	    KindFire = missile({GiveCoordAttack PPosition Input.minDistanceMissile Input.maxDistanceMissile})
-
-	    {Loop T PID PLife PIsSurface PPosition PItemsCharge 
-	    	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
+	       it(missile:1 mine:0 sonar:0 drone:0) then
+	       ID = PID
+	       CoordAtk = {GiveCoordAttack PPosition Input.minDistanceMissile Input.maxDistanceMissile}
+	       {Wait CoordAtk}
+	       KindFire = missile(CoordAtk)
+	       
+	       {Loop T PID PLife PIsSurface PPosition PItemsCharge 
+		it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    [] it(missile:0 mine:1 sonar:0 drone:0) then
 	       ID = PID
-	       KindFire = mine({GiveCoordAttack PPosition Input.minDistanceMine Input.maxDistanceMine})
+	       CoordAtk = {GiveCoordAttack PPosition Input.minDistanceMissile Input.maxDistanceMissile}
+	       {Wait CoordAtk}
+	       KindFire =  mine(CoordAtk)
 	       {Loop T PID PLife PIsSurface PPosition PItemsCharge 
-	       	   it(missile:0 mine:0 sonar:0 drone:0) {Append PMines Position|nil} PPathHistoric}
+		it(missile:0 mine:0 sonar:0 drone:0) {Append PMines Position|nil} PPathHistoric}
 	    [] it(missile:0 mine:0 sonar:1 drone:0) then
 	       ID = PID
 	       KindFire = sonar
 	       {Loop T PID PLife PIsSurface PPosition PItemsCharge 
-	 	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
+		it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    %not yet managed
 	    [] it(missile:0 mine:0 sonar:0 drone:1) then
 	       ID = PID
