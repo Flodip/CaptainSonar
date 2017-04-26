@@ -179,7 +179,7 @@ in
          if Player > Input.nbPlayer then ListEnemies
          else
             % The player is not his own enemy
-            if Player \= PlayerID then
+            if Player \= PlayerID.id then
                {AdjoinList ListEnemies [Player#enemy(life:Input.maxDamage)] NewListEnemies}
                {Loop Player+1 NewListEnemies}
             else
@@ -386,15 +386,18 @@ in
 	 % Sonars not yet managed
 	 [] sayAnswerSonar(ID Answer)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] sayDeath(ID)|T then
-
+	    NewListEnemies in
+	    {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
+	    {Loop T PID PLife NewListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
+	 [] sayDamageTaken(ID Damage LifeLeft)|T then 
+	    NewListEnemies in
+	    {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
-	 [] sayDamageTaken(ID Damage LifeLeft)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 end
       end
    in
       local Enemies in
          Enemies = {InitListEnemies PIDInit}
-         {System.show Enemies}
          {Loop StreamInit PIDInit Input.maxDamage Enemies true unit itc(missile:0 mine:0 sonar:0 drone:0) it(missile:0 mine:0 sonar:0 drone:0) nil nil}
       end
    end

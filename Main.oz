@@ -21,6 +21,8 @@ define
    GetTimeSurface
    SetTimeSurface
 
+   PlaySound
+
 
    Broadcast
    BroadcastMove
@@ -68,6 +70,19 @@ in
     in
       Delta = Input.thinkMax - Input.thinkMin + 1
       {Delay (({OS.rand} mod Delta) + Input.thinkMin)}
+    end
+
+    proc {PlaySound Msg}
+       Command Args Stdin Stdout Pid in
+       Command = aplay
+
+       case Msg of explosion then
+          Args = './explosion.wav'|nil
+       else
+          Args = './explosion.wav'|nil
+       end
+       
+       {OS.pipe Command Args Pid Stdin#Stdout}
     end
 
 
@@ -185,6 +200,7 @@ in
 			    {System.show KindItem}
 			    {Send Judge putMine(ID KindItem.1)}
 			 [] missile(Position) then
+                            {PlaySound explosion}
 			    {BroadcastMissileExplode T ID Position Msg}
 			 [] sonar then skip %TODO
 			 [] drone then skip %TODO
