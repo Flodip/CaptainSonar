@@ -195,13 +195,18 @@ in
 			 {Wait KindItem}
 			 case KindItem of null then skip
 			 [] mine(Position) then
-			    {BroadcastMinePlaced T ID}
 			    {System.show 'MINE'}
 			    {System.show KindItem}
+			    {BroadcastMinePlaced T ID}
 			    {Send Judge putMine(ID KindItem.1)}
 			 [] missile(Position) then
-                            {PlaySound explosion}
+				try
+					{PlaySound explosion}
+				catch X then {System.show 'Error on sound'} end
+				{System.show 'EXPLOSION'}
+			    {System.show KindItem}
 			    {BroadcastMissileExplode T ID Position Msg}
+			    {Send Judge explosion(ID KindItem.1)}
 			 [] sonar then skip %TODO
 			 [] drone then skip %TODO
 			 else skip

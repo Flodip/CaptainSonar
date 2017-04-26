@@ -11,8 +11,13 @@ define
     Canvas
     MainURL={OS.getCWD}
    Img_water = {QTk.newImage photo(url:MainURL#"/images/water.gif")}
+   Img_small_water = {QTk.newImage photo(url:MainURL#"/images/smallWater.gif")}
    Img_ground = {QTk.newImage photo(url:MainURL#"/images/dirt.gif")}
    Img_sub = {QTk.newImage photo(url:MainURL#"/images/sub.gif")}
+   Img_expl_2 = {QTk.newImage photo(url:MainURL#"/images/expl/2.gif")}
+   Img_expl_4 = {QTk.newImage photo(url:MainURL#"/images/expl/4.gif")}
+   Img_expl_6 = {QTk.newImage photo(url:MainURL#"/images/expl/6.gif")}
+   Img_expl_8 = {QTk.newImage photo(url:MainURL#"/images/expl/8.gif")}
    StartWindow
    TreatStream
 
@@ -29,6 +34,7 @@ define
    DrawSubmarine
    MoveSubmarine
    DrawMine
+   Explosion
    RemoveMine
    DrawPath
 
@@ -156,6 +162,35 @@ in
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
       end
    end
+   /* NEW */
+   fun{Explosion Position}
+      fun{$ Grid State}
+	 ID HandleScore Handle Mine Path LabelExpl1 LabelExpl2 LabelExpl3 LabelExpl4 LabelWater HandleMine X Y
+      in
+	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:Path) = State
+	 pt(x:X y:Y) = Position
+	 thread 
+		 LabelExpl1 = label(image:Img_expl_2 bg:c(45 123 253))
+		 {Grid.grid configure(LabelExpl1 row:X+1 column:Y+1)}
+		 {Delay 400}
+		 LabelExpl2 = label(image:Img_expl_4 bg:c(45 123 253))
+		 {Grid.grid configure(LabelExpl2 row:X+1 column:Y+1)}
+		 {Delay 400}
+		 LabelExpl3 = label(image:Img_expl_6 bg:c(45 123 253))
+		 {Grid.grid configure(LabelExpl3 row:X+1 column:Y+1)}
+		 {Delay 400}
+		 LabelExpl4 = label(image:Img_expl_8 bg:c(45 123 253))
+		 {Grid.grid configure(LabelExpl4 row:X+1 column:Y+1)}
+		 {Delay 400}
+		 LabelWater = label(image:Img_small_water bg:c(45 123 253))
+		 {Grid.grid configure(LabelWater row:X+1 column:Y+1)}
+		 {Delay 400}
+		 
+	 end
+	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
+      end
+   end
+   /*END NEW*/
 
    local
       fun{RmMine Grid Position List}
@@ -285,7 +320,7 @@ in
       [] removePlayer(ID)|T then
 	 {TreatStream T Grid {RemovePlayer Grid ID State}}
       [] explosion(ID Position)|T then
-	 {TreatStream T Grid State}
+	 {TreatStream T Grid {StateModification Grid ID State {Explosion Position}}}
       [] drone(ID Drone)|T then
 	 {TreatStream T Grid State}
       [] sonar(ID)|T then
