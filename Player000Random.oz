@@ -308,7 +308,7 @@ in
 
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition ItemsC Items PMines PPathHistoric}
 	 [] fireItem(ID KindFire)|T then
-	    X Y Position in
+	    X Y Position CoordAtk in
 	    case PItems of
 	    it(missile:1 mine:0 sonar:0 drone:0) then
 	    ID = PID

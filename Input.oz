@@ -43,13 +43,13 @@ in
 
 %%%% Style of game %%%%
 
-   IsTurnByTurn = true
-   
+   IsTurnByTurn = false
+
 %%%% Description of the map %%%%
-   
+
    NRow = 10
    NColumn = 10
-   
+
    Map = [[0 0 0 0 0 0 0 0 0 0]
 	  [0 0 0 0 0 0 0 0 0 0]
 	  [0 0 0 1 1 0 0 0 0 0]
@@ -66,34 +66,34 @@ in
    NbPlayer = 2
    Players = [player000random player000random]
    Colors = [yellow green]
-   
+
 %%%% Thinking parameters (only in simultaneous) %%%%
-   
-   ThinkMin = 500
-   ThinkMax = 3000
-   
+
+   ThinkMin = 50
+   ThinkMax = 300
+
 %%%% Surface time/turns %%%%
-   
+
    TurnSurface = 3
-   
+
 %%%% Life %%%%
-   
+
    MaxDamage = 4
-   
+
 %%%% Number of load for each item %%%%
 
    Missile = 3
    Mine = 3
    Sonar = 3
    Drone = 3
-   
+
 %%%% Distances of placement %%%%
-   
+
    MinDistanceMine = 1
    MaxDistanceMine = 2
    MinDistanceMissile = 1
    MaxDistanceMissile = 4
-   
-   
-   
+
+
+
 end
