@@ -120,7 +120,7 @@ in
        of H|T then
 	  thread {MainGame H|nil TimeSurfacePlayers} end
 	  {PlaySimultaneous T TimeSurfacePlayers}
-		else skip
+       else skip
        end
     end
 
@@ -208,13 +208,8 @@ in
 	     end
 	  end
          %Player put at the end of the list, and we begin the next player's turn
-<<<<<<< HEAD
-         %{Delay 300}
-	  {PlayByTurn {Append T P|nil} {Append TimeT Time|nil}}
-=======
 	  {Delay 300}
 	  {MainGame {Append T P|nil} {Append TimeT Time|nil}}
->>>>>>> 15728e0810b15c95cf9eb249119e02d47ed7d160
        end
     end
 
