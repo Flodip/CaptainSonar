@@ -105,14 +105,17 @@ in
     
     proc {PlayByTurn Players TimeSurfacePlayers}
        case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
+          Time in
+          %Player dead
 	  if P == null then
+             Time = null
 	     skip
-            %Player dead
+          %Player still alive
 	  else
-	     ID Surface Time in
+             ID Surface in
 	     {Send P isSurface(ID Surface)}
 	     {System.show '-------Player'#ID.id}
-         %If Player at surface, he has to wait x turns before diving
+             %If Player at surface, he has to wait x turns before diving
 	     if Surface then
 		if TimeSurface == 1 then
 		   {Send P dive}
@@ -121,14 +124,14 @@ in
 		ID Position Direction IDTmp in
 		{Send P move(ID Position Direction)}
 		{Wait ID}
-	    IDTmp = ID
+	        IDTmp = ID
             %Ask Player if he wants to move or dive
 		if Direction == surface then 
 		   {Send Judge surface(IDTmp)}
 		   {BroadcastSurface T IDTmp}
 		   Time = Input.turnSurface-1
 		else
-	       %{System.show IDTmp}
+	           Time = TimeSurface
 		   if {Not {IsCorrectMove Position}} then
 		      {PlayByTurn Players TimeSurfacePlayers}
 		   else
