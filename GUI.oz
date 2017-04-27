@@ -8,12 +8,12 @@ export
    portWindow:StartWindow
 define
 
-    Canvas
-    MainURL={OS.getCWD}
+   MainURL={OS.getCWD}
    Img_water = {QTk.newImage photo(url:MainURL#"/images/water.gif")}
    Img_small_water = {QTk.newImage photo(url:MainURL#"/images/smallWater.gif")}
    Img_ground = {QTk.newImage photo(url:MainURL#"/images/dirt.gif")}
    Img_sub = {QTk.newImage photo(url:MainURL#"/images/sub.gif")}
+   Img_bomb = {QTk.newImage photo(url:MainURL#"/images/bomb.gif")}
    Img_expl_2 = {QTk.newImage photo(url:MainURL#"/images/expl/2.gif")}
    Img_expl_4 = {QTk.newImage photo(url:MainURL#"/images/expl/4.gif")}
    Img_expl_6 = {QTk.newImage photo(url:MainURL#"/images/expl/6.gif")}
@@ -155,7 +155,7 @@ in
       in
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:Path) = State
 	 pt(x:X y:Y) = Position
-	 LabelMine = label(text:"M" handle:HandleMine borderwidth:5 relief:raised bg:ID.color ipadx:5 ipady:5)
+	 LabelMine = label(image:Img_bomb handle:HandleMine bg:ID.color)
 	 {Grid.grid configure(LabelMine row:X+1 column:Y+1)}
 	 {HandleMine 'raise'()}
 	 {Handle 'raise'()}
@@ -172,19 +172,18 @@ in
 	 thread 
 		 LabelExpl1 = label(image:Img_expl_2 bg:c(45 123 253))
 		 {Grid.grid configure(LabelExpl1 row:X+1 column:Y+1)}
-		 {Delay 400}
+		 {Delay 250}
 		 LabelExpl2 = label(image:Img_expl_4 bg:c(45 123 253))
 		 {Grid.grid configure(LabelExpl2 row:X+1 column:Y+1)}
-		 {Delay 400}
+		 {Delay 250}
 		 LabelExpl3 = label(image:Img_expl_6 bg:c(45 123 253))
 		 {Grid.grid configure(LabelExpl3 row:X+1 column:Y+1)}
-		 {Delay 400}
+		 {Delay 250}
 		 LabelExpl4 = label(image:Img_expl_8 bg:c(45 123 253))
 		 {Grid.grid configure(LabelExpl4 row:X+1 column:Y+1)}
-		 {Delay 400}
+		 {Delay 250}
 		 LabelWater = label(image:Img_small_water bg:c(45 123 253))
 		 {Grid.grid configure(LabelWater row:X+1 column:Y+1)}
-		 {Delay 400}
 		 
 	 end
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
