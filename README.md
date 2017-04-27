@@ -18,6 +18,8 @@ Terminer basicAI
 
 Tests interopabilité
 
+Refactorer le code
+
 - Mineur
 
 Créer joueur humain
