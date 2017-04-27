@@ -18,8 +18,8 @@ define
    PlaySimultaneous
    MainGame
 
-   GetTimeSurface
-   SetTimeSurface
+   %GetTimeSurface
+   %SetTimeSurface
 
    PlaySound
 
@@ -81,7 +81,7 @@ in
        else
           Args = './explosion.wav'|nil
        end
-       
+
        {OS.pipe Command Args Pid Stdin#Stdout}
     end
 
@@ -206,10 +206,14 @@ in
 			 [] missile(Position) then
 				try
 					{PlaySound explosion}
+<<<<<<< HEAD
 				catch X then {System.show 'Error on sound'} end
+=======
+				catch X then {System.show 'Error on sound'#X} end
+>>>>>>> 7ea0abb8d62a16e1587689b05ba5992bb03101f9
 				{System.show 'EXPLOSION'}
 			    {System.show KindItem}
-			    thread 
+			    thread
 					{BroadcastMissileExplode T ID Position Msg}
 					{Send Judge explosion(ID 1 KindItem.1)}
 					{Delay 200}
@@ -256,7 +260,7 @@ in
 
 %%%%%%%%%% MISC METHODS %%%%%%%%%%%%%%%%%%%%%%
 
-    fun {GetTimeSurface ID}
+    /*fun {GetTimeSurface ID}
        fun {GTSr IDr TimeSurfacePlayers}
 	  case TimeSurfacePlayers of nil then nil
 	  [] H|T then
@@ -279,7 +283,7 @@ in
        end
     in
        {STSr ID.id ListTimeSurfacePlayers}
-    end
+    end*/
 
 %%%%%%%%%% END MISC METHODS %%%%%%%%%%%%%%%%%%
 
@@ -351,6 +355,11 @@ in
 
 
    %Port GUI init and display Window
+   if Input.generateMap == true then
+      {Input.generateMapProc}
+   else
+      {Input.defaultMapProc}
+   end
    Judge = {GUI.portWindow}
    {Send Judge buildWindow}
    {System.show 'Window initialized'}

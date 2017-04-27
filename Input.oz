@@ -1,4 +1,6 @@
 functor
+import
+   OS
 export
    isTurnByTurn:IsTurnByTurn
    nRow:NRow
@@ -19,11 +21,22 @@ export
    maxDistanceMine:MaxDistanceMine
    minDistanceMissile:MinDistanceMissile
    maxDistanceMissile:MaxDistanceMissile
+
+   % Gen map
+   generateMap:GenerateMap
+   generateMapProc:GenerateMapProc
+   defaultMapProc:DefaultMapProc
 define
    IsTurnByTurn
    NRow
    NColumn
    Map
+
+   GenerateMap
+   PercentOfGround
+   DefaultMapProc
+   GenerateMapProc
+
    NbPlayer
    Players
    Colors
@@ -39,6 +52,7 @@ define
    MaxDistanceMine
    MinDistanceMissile
    MaxDistanceMissile
+
 in
 
 %%%% Style of game %%%%
@@ -50,16 +64,41 @@ in
    NRow = 10
    NColumn = 10
 
-   Map = [[0 0 0 0 0 0 0 0 0 0]
-	  [0 0 0 0 0 0 0 0 0 0]
-	  [0 0 0 1 1 0 0 0 0 0]
-	  [0 0 1 1 0 0 1 0 0 0]
-	  [0 0 0 0 0 0 0 0 0 0]
-	  [0 0 0 0 0 0 0 0 0 0]
-	  [0 0 0 1 0 0 1 1 0 0]
-	  [0 0 1 1 0 0 1 0 0 0]
-	  [0 0 0 0 0 0 0 0 0 0]
-	  [0 0 0 0 0 0 0 0 0 0]]
+   GenerateMap = true
+   PercentOfGround = 11
+
+   proc {DefaultMapProc}
+     Map = [[0 0 0 0 0 0 0 0 0 0]
+  	  [0 0 0 0 0 0 0 0 0 0]
+  	  [0 0 0 1 1 0 0 0 0 0]
+  	  [0 0 1 1 0 0 1 0 0 0]
+  	  [0 0 0 0 0 0 0 0 0 0]
+  	  [0 0 0 0 0 0 0 0 0 0]
+  	  [0 0 0 1 0 0 1 1 0 0]
+  	  [0 0 1 1 0 0 1 0 0 0]
+  	  [0 0 0 0 0 0 0 0 0 0]
+  	  [0 0 0 0 0 0 0 0 0 0]]
+    end
+
+    proc {GenerateMapProc}
+     fun {LoopLg N}
+       if N == 0 then nil
+       else
+        if ({OS.rand} mod 100) < PercentOfGround then
+          1|{LoopLg N-1}
+        else
+          0|{LoopLg N-1}
+        end
+     end
+    end
+    fun {Loop Row Col}
+       if Row =< 0 then nil
+    else {LoopLg Col}|{Loop Row-1 Col} end
+    end
+ in
+    Map = {Loop NRow NColumn}
+ end
+
 
 %%%% Players description %%%%
 
@@ -93,7 +132,4 @@ in
    MaxDistanceMine = 2
    MinDistanceMissile = 1
    MaxDistanceMissile = 4
-
-
-
 end

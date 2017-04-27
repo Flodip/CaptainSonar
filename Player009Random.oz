@@ -3,12 +3,12 @@ import
    Input
    OS
    System
-export 
-   portPlayer:StartPlayer 
-define 
-   StartPlayer 
+export
+   portPlayer:StartPlayer
+define
+   StartPlayer
    TreatStream
-   
+
    %Subdivision en plusieurs sous fonctions pour faciliter la création d'autres IA
    %Attention, bind ID en dernier
 
@@ -27,9 +27,9 @@ define
    SufferExplosion
 
    InitListEnemies
-in 
-   fun{StartPlayer Color ID} 
-      Stream 
+in
+   fun{StartPlayer Color ID}
+      Stream
       Port
    in 
       {NewPort Stream Port} 
@@ -94,7 +94,7 @@ in
    fun {In Position ListPosition}
       if ListPosition == nil then false
       elseif ListPosition.1 == Position then true
-      else {In Position ListPosition.2} end  
+      else {In Position ListPosition.2} end
    end
 
    fun {ToEast P}
@@ -150,14 +150,14 @@ in
    fun {SufferExplosion PID PosMissile PosPlayer PLife ?Message}
       %Distance: Distance between the explosion center and the player
       %LifeLeft: Life left after the explosion
-      Distance LifeLeft in 
+      Distance LifeLeft in
       Distance = {DistanceBetween PosPlayer PosMissile}
       if Distance < 2 then
          %Damage: Damage taken due to the explosion
          local Damage in
             if Distance == 0 then Damage = 2
             else Damage = 1 end
-	 
+
 	    LifeLeft = PLife - Damage
 
 	    if LifeLeft =< 0 then
@@ -170,7 +170,7 @@ in
 	 Message = null
 	 LifeLeft = PLife
       end
-      LifeLeft	
+      LifeLeft
    end
 
    fun {InitListEnemies PlayerID}
@@ -201,7 +201,7 @@ in
 	    X Y in
 	    X = ({OS.rand} mod Input.nColumn)+1
 	    Y = ({OS.rand} mod Input.nRow)+1
-	    
+
 	    Position = pt(x:X y:Y)
 	    ID = PID
 	    {Loop T PID PLife ListEnemies PIsSurface Position PItemsCharge PItems PMines Position|nil}
@@ -221,17 +221,24 @@ in
 	       {Loop T PID PLife ListEnemies true PPosition PItemsCharge PItems PMines nil}
 	    %move north, south, east or west
 	    else
+<<<<<<< HEAD
 	       Pos Dir in	       
+=======
+	       X Y Pos Dir in
+	       %X = PPosition.x
+	       %Y = PPosition.y
+
+>>>>>>> 7ea0abb8d62a16e1587689b05ba5992bb03101f9
 	       case D of 1 then
 		  Dir = east
 		  Pos = {ToEast PPosition}
-	       [] 2 then 
+	       [] 2 then
 		  Dir = west
 		  Pos = {ToWest PPosition}
-	       [] 3 then 
+	       [] 3 then
 		  Dir = north
 		  Pos = {ToNorth PPosition}
-	       [] 4 then 
+	       [] 4 then
 		  Dir = south
 		  Pos = {ToSouth PPosition}
 	       else skip
@@ -241,7 +248,7 @@ in
 	          Direction = Dir
 		  Position = Pos
 		  ID=PID
-	          {Loop T PID PLife ListEnemies PIsSurface Position PItemsCharge 
+	          {Loop T PID PLife ListEnemies PIsSurface Position PItemsCharge
 	          	PItems PMines {Append PPathHistoric Position|nil}}
 	       %Move KO, asks again
 	       else
@@ -250,10 +257,10 @@ in
 	    end
 	 [] dive|T then
 	    {Loop T PID PLife ListEnemies false PPosition PItemsCharge PItems PMines PPosition|nil}
-	 [] chargeItem(ID KindItem)|T then 
+	 [] chargeItem(ID KindItem)|T then
 	    ID = PID
 	    ItemsC Items TmpC Tmp in
-	    case ({OS.rand} mod 4) of 0 then 
+	    case ({OS.rand} mod 4) of 0 then
 	       if PItemsCharge.missile+1 == Input.missile then
 	          KindItem = missile
 	          TmpC = 0
@@ -305,37 +312,38 @@ in
 
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition ItemsC Items PMines PPathHistoric}
 	 [] fireItem(ID KindFire)|T then
-	    X Y Position CoordAtk in
+	    %X Y CoordAtk
+      Position  in
 	    case PItems of
 	    it(missile:1 mine:0 sonar:0 drone:0) then
 	    ID = PID
 	    KindFire = missile({GiveCoordAttack PPosition Input.minDistanceMissile Input.maxDistanceMissile})
 
-	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge 
+	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	    	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    [] it(missile:0 mine:1 sonar:0 drone:0) then
 	       ID = PID
 	       KindFire = mine({GiveCoordAttack PPosition Input.minDistanceMine Input.maxDistanceMine})
-	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge 
+	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	       	   it(missile:0 mine:0 sonar:0 drone:0) {Append PMines Position|nil} PPathHistoric}
 	    [] it(missile:0 mine:0 sonar:1 drone:0) then
 	       ID = PID
 	       KindFire = sonar
-	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge 
+	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    %not yet managed
 	    [] it(missile:0 mine:0 sonar:0 drone:1) then
 	       ID = PID
 	       KindFire = null
-	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge 
+	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    else
 	       ID = PID
 	       KindFire = null
-	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge 
+	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	PItems PMines PPathHistoric}
 	    end
-	 [] fireMine(ID Mine)|T then 
+	 [] fireMine(ID Mine)|T then
 	 	WillFireMine NewPMines in
 	 	WillFireMine = {OS.rand} mod 1
 	 	ID = PID
@@ -353,7 +361,7 @@ in
 	    ID = PID
 	    Answer = PIsSurface
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
-	 [] sayMove(ID Direction)|T then 
+	 [] sayMove(ID Direction)|T then
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] saySurface(ID)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] sayCharge(ID KindItem)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
@@ -367,7 +375,7 @@ in
 
 	    {Loop T PID LifeLeft ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] sayMineExplode(ID Position Message)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
-	    
+
 	    %TODO: save that the player ID has used one of his placed mine
 
 	    LifeLeft in
