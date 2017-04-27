@@ -115,14 +115,11 @@ in
 	  [] P|T then
 	     {Send P initPosition(ID Pos)}
             %The position is incorrect, asked a new one
-             
-             {System.show Pos}
+            {System.show Pos}
 	     if {Not {IsCorrectMove Pos}} then
-             {System.show 'test2'}
 		{IPPR Players}
             %The position is sent to the GUI and asks the next player
 	     else
-                {System.show 'test3'}
 		{Send Judge initPlayer(ID Pos)}
 		{IPPR T}
 	     end
@@ -204,14 +201,11 @@ in
 			    {BroadcastMinePlaced T ID}
 			    {Send Judge putMine(ID KindItem.1)}
 			 [] missile(Position) then
-				try
-					{PlaySound explosion}
-<<<<<<< HEAD
-				catch X then {System.show 'Error on sound'} end
-=======
-				catch X then {System.show 'Error on sound'#X} end
->>>>>>> 7ea0abb8d62a16e1587689b05ba5992bb03101f9
-				{System.show 'EXPLOSION'}
+			    try {PlaySound explosion}
+			    catch X then 
+                                {System.show 'Error on sound'#X} 
+                            end
+			    {System.show 'EXPLOSION'}
 			    {System.show KindItem}
 			    thread
 					{BroadcastMissileExplode T ID Position Msg}

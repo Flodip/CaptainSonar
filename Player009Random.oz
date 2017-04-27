@@ -221,14 +221,7 @@ in
 	       {Loop T PID PLife ListEnemies true PPosition PItemsCharge PItems PMines nil}
 	    %move north, south, east or west
 	    else
-<<<<<<< HEAD
 	       Pos Dir in	       
-=======
-	       X Y Pos Dir in
-	       %X = PPosition.x
-	       %Y = PPosition.y
-
->>>>>>> 7ea0abb8d62a16e1587689b05ba5992bb03101f9
 	       case D of 1 then
 		  Dir = east
 		  Pos = {ToEast PPosition}

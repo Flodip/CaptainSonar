@@ -192,7 +192,6 @@ in
    %Precondition: There is at least one square of water on the map
    fun {GetValidCorner}
       fun {Loop I J}
-         {System.show I|J|nil}
          if {GetValueMap pt(x:I y:J)} == 0 then
             pt(x:I y:J)
          else
@@ -216,7 +215,6 @@ in
 	 case Stream
 	 of nil then skip
 	 [] initPosition(ID Position)|T then
-	    {System.show 'enter initPosition'}
 	    %Init at the corner of the map and move as much as possible without making surface
 	    Position = {GetValidCorner}
 	    ID = PID
@@ -230,18 +228,22 @@ in
 	       ID=PID
 	       {Loop T PID PLife ListEnemies true PModeMove PPosition PItemsCharge PItems PMines nil}
 	    else
-	       Pos Dir in
 	       %goes est
 	       if PModeMove == 1 then
 	          if {IsCorrectMove {ToEast PPosition} PPathHistoric} then
-	             Dir = est
-	             Pos = {ToEast PPosition}
+	             Direction = est
+	             Position = {ToEast PPosition}
 	          elseif {IsCorrectMove {ToSouth PPosition} PPathHistoric} then
-	             Dir = south
-	             Pos = {ToSouth PPosition}
+	             if PPosition.y > (Input.nColumn div 4)*3 then
+	                % Go to mode 2
+	                {Loop Stream PID PLife ListEnemies PIsSurface 2 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                Direction = south
+	                Position = {ToSouth PPosition}
+	             end
 	          elseif {IsCorrectMove {ToNorth PPosition} PPathHistoric} then
-	             Dir = north
-	             Pos = {ToNorth PPosition}
+	             Direction = north
+	             Position = {ToNorth PPosition}
 	          else
 	             % Go to mode 2
 	             {Loop Stream PID PLife ListEnemies PIsSurface 2 PPosition PItemsCharge PItems PMines PPathHistoric}
@@ -249,27 +251,32 @@ in
 	       %goes west
 	       else
 	          if {IsCorrectMove {ToWest PPosition} PPathHistoric} then
-	             Dir = west
-	             Pos = {ToWest PPosition}
+	             Direction = west
+	             Position = {ToWest PPosition}
 	          elseif {IsCorrectMove {ToSouth PPosition} PPathHistoric} then
-	             Dir = south
-	             Pos = {ToSouth PPosition}
+	             if PPosition.y < (Input.nColumn div 4) then
+	                % Go to mode 2
+	                {Loop Stream PID PLife ListEnemies PIsSurface 1 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                Direction = south
+	                Position = {ToSouth PPosition}
+	             end
 	          elseif {IsCorrectMove {ToNorth PPosition} PPathHistoric} then
-	             Dir = north
-	             Pos = {ToNorth PPosition}
+	             Direction = north
+	             Position = {ToNorth PPosition}
 	          else
 	             % Go to mode 1
 	             {Loop Stream PID PLife ListEnemies PIsSurface 1 PPosition PItemsCharge PItems PMines PPathHistoric}
 	             %should not be possible to loop infinitely between the modes thans to IsBlocked
 	          end
 	       end
+	       ID = PID
 	       {Loop T PID PLife ListEnemies PIsSurface PModeMove Position PItemsCharge 
 	          	PItems PMines {Append PPathHistoric Position|nil}}
 	    end
 	 [] dive|T then
 	    {Loop T PID PLife ListEnemies false PModeMove PPosition PItemsCharge PItems PMines PPosition|nil}
 	 [] chargeItem(ID KindItem)|T then 
-	    ID = PID
 	    ItemsC Items TmpC Tmp in
 	    case ({OS.rand} mod 4) of 0 then 
 	       if PItemsCharge.missile+1 == Input.missile then
@@ -320,7 +327,7 @@ in
 	       ItemsC = itc(missile:PItemsCharge.missile mine:PItemsCharge.mine sonar:PItemsCharge.sonar drone:TmpC)
 	       Items = it(missile:PItems.missile mine:PItems.mine sonar:PItems.sonar drone:Tmp)
 	    end
-
+	    ID = PID
 	    {Loop T PID PLife ListEnemies PIsSurface PModeMove PPosition ItemsC Items PMines PPathHistoric}
 	 [] fireItem(ID KindFire)|T then
 	    X Y Position CoordAtk in
@@ -415,7 +422,7 @@ in
 	       {AdjoinList ListEnemies [ID.id#enemy(life:LifeLeft)] NewListEnemies}
 	    end
 	    {Loop T PID PLife ListEnemies PIsSurface PModeMove PPosition PItemsCharge PItems PMines PPathHistoric}
-	 else
+	 [] H|T then
 	    {System.show 'Invalid Msg'}
 	    {Loop T PID PLife ListEnemies PIsSurface PModeMove PPosition PItemsCharge PItems PMines PPathHistoric}	
 	 end
@@ -423,7 +430,6 @@ in
    in
       local Enemies in
          Enemies = {InitListEnemies PIDInit}
-         {System.show 'coucou'}
          {Loop StreamInit PIDInit Input.maxDamage Enemies true 1 unit itc(missile:0 mine:0 sonar:0 drone:0) it(missile:0 mine:0 sonar:0 drone:0) nil nil}
       end
    end
