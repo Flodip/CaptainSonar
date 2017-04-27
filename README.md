@@ -24,6 +24,8 @@ Tests interopabilité
 
 Refactorer le code
 
+Régler les warnings lors du make
+
 - Mineur
 
 Améliorer le design du tracage du Path
