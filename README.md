@@ -8,7 +8,7 @@ Notre système redemandera une position initiale tant que la position envoyée p
 
 - Majeur
 
-~~Vérifier si GUI gère les couleurs de type c(\<colorNum> \<colorNum> \<colorNum>)
+~~Vérifier si GUI gère les couleurs de type c(\<colorNum> \<colorNum> \<colorNum>)~~
 
 Terminer la gestion de FireMine
 
