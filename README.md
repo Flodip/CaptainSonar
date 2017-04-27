@@ -26,6 +26,8 @@ Refactorer le code
 
 Régler les warnings lors du make
 
+Gestions des messages
+
 - Mineur
 
 Améliorer le design du tracage du Path
