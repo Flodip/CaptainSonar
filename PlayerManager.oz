@@ -11,8 +11,8 @@ define
 in
    fun{PlayerGenerator Kind Color ID}
       case Kind
-      of player000random then {Player009Random.portPlayer Color ID}
-      [] player006basicai then {Player009BasicAI.portPlayer Color ID}
+      of player009random then {Player009Random.portPlayer Color ID}
+      [] player009basicai then {Player009BasicAI.portPlayer Color ID}
       [] playerbasicai then {PlayerBasicAI.portPlayer Color ID}
       end
    end

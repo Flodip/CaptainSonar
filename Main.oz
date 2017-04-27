@@ -115,10 +115,14 @@ in
 	  [] P|T then
 	     {Send P initPosition(ID Pos)}
             %The position is incorrect, asked a new one
+             
+             {System.show Pos}
 	     if {Not {IsCorrectMove Pos}} then
+             {System.show 'test2'}
 		{IPPR Players}
             %The position is sent to the GUI and asks the next player
 	     else
+                {System.show 'test3'}
 		{Send Judge initPlayer(ID Pos)}
 		{IPPR T}
 	     end

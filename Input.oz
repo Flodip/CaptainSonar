@@ -64,7 +64,7 @@ in
 %%%% Players description %%%%
 
    NbPlayer = 2
-   Players = [player000random player000random]
+   Players = [player009basicai player009random]
    Colors = [yellow c(255 128 64)]
 
 %%%% Thinking parameters (only in simultaneous) %%%%
