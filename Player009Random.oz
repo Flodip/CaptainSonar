@@ -389,9 +389,16 @@ in
 	    NewListEnemies in
 	    {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
 	    {Loop T PID PLife NewListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
-	 [] sayDamageTaken(ID Damage LifeLeft)|T then 
-	    NewListEnemies in
-	    {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
+	 [] sayDamageTaken(ID Damage LifeLeft)|T then
+	    %can use Damage information to estimate Player position
+
+	    NewListEnemies Enemy in
+	    Enemy = ListEnemies.(ID.id)
+	    if Enemy == null then
+	       NewListEnemies = ListEnemies
+	    else
+	       {AdjoinList ListEnemies [ID.id#enemy(life:LifeLeft)] NewListEnemies}
+	    end
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 end
       end
