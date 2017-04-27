@@ -8,7 +8,7 @@ Notre système redemandera une position initiale tant que la position envoyée p
 
 - Majeur
 
-Vérifier si GUI gère les couleurs de type c(\<colorNum> \<colorNum> \<colorNum>)
+Gérer erreurs de aplay sur windows (et mac)
 
 Tester simultaneous mode (par rapport au schéma de l'énoncé)
 
@@ -25,6 +25,8 @@ Tests interopabilité
 Refactorer le code
 
 Régler les warnings lors du make
+
+Gestions des messages
 
 - Mineur
 
