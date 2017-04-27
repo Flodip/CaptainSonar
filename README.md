@@ -6,3 +6,24 @@ Notre système redemandera une position initiale tant que la position envoyée p
 
 # TODO
 
+- Majeur
+
+Vérifier si GUI gère les couleurs de type c(<colorNum> <colorNum> <colorNum>)
+
+Terminer la gestion de FireMine
+
+Générateur de maps
+
+Terminer basicAI
+
+Tests interopabilité
+
+- Mineur
+
+Créer joueur humain
+
+Bug affichage explosion
+
+Bug affichage chemins qui se croisent
+
+Bug affichage mines superposées
