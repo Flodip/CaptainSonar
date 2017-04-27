@@ -81,7 +81,7 @@ in
        else
           Args = './explosion.wav'|nil
        end
-       
+
        {OS.pipe Command Args Pid Stdin#Stdout}
     end
 
@@ -205,7 +205,7 @@ in
 				catch X then {System.show 'Error on sound'} end
 				{System.show 'EXPLOSION'}
 			    {System.show KindItem}
-			    thread 
+			    thread
 					{BroadcastMissileExplode T ID Position Msg}
 					{Send Judge explosion(ID 1 KindItem.1)}
 					{Delay 200}
@@ -347,6 +347,11 @@ in
 
 
    %Port GUI init and display Window
+   if Input.generateMap == true then
+      {Input.generateMapProc}
+   else
+      {Input.defaultMapProc}
+   end
    Judge = {GUI.portWindow}
    {Send Judge buildWindow}
    {System.show 'Window initialized'}
