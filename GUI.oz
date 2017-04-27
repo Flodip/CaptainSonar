@@ -16,6 +16,7 @@ define
    Img_expl_4 = {QTk.newImage photo(url:MainURL#"/images/expl/4.gif")}
    Img_expl_5 = {QTk.newImage photo(url:MainURL#"/images/expl/5.gif")}
    Img_expl_7 = {QTk.newImage photo(url:MainURL#"/images/expl/7.gif")}
+   Img_test = {QTk.newImage photo(url:MainURL#"/images/test.gif")}
    StartWindow
    TreatStream
 
@@ -49,14 +50,18 @@ in
 
 %%%%% Build the initial window and set it up (call only once)
    fun{BuildWindow}
-      Grid GridScore Toolbar Desc DescScore Window
+      Grid GridScore Toolbar Desc DescScore Window Dd Cc Win
    in
+
+      Dd=canvas(handle:Cc width:400 height:400 bg:c(255 255 255))
+      Win = {QTk.build td(Dd)}
+      {Win show}
+      {Cc create(image 198 198 image:Img_test)}
       Toolbar=lr(glue:we tbbutton(text:"Quit" glue:w action:toplevel#close))
       Desc=grid(handle:Grid height:500 width:500)
       DescScore=grid(handle:GridScore height:100 width:500)
       Window={QTk.build td(Toolbar Desc DescScore)}
 
-      {Window show}
 
       % configure rows and set headers
       {Grid rowconfigure(1 minsize:50 weight:0 pad:5)}
@@ -78,6 +83,9 @@ in
 
       {DrawMap Grid}
 
+      {Delay 1000}
+      {Win hide}
+      {Window show}
       handle(grid:Grid score:GridScore)
    end
 

@@ -202,8 +202,8 @@ in
 			    {Send Judge putMine(ID KindItem.1)}
 			 [] missile(Position) then
 			    try {PlaySound explosion}
-			    catch X then 
-                                {System.show 'Error on sound'#X} 
+			    catch X then
+                                {System.show 'Error on sound'#X}
                             end
 			    {System.show 'EXPLOSION'}
 			    {System.show KindItem}
@@ -356,6 +356,7 @@ in
    end
    Judge = {GUI.portWindow}
    {Send Judge buildWindow}
+   {Delay 1800}
    {System.show 'Window initialized'}
 
    %Ports Players init
