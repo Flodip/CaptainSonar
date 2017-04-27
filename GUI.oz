@@ -2,7 +2,6 @@ functor
 import
    QTk at 'x-oz://system/wp/QTk.ozf'
    Input
-   System
     OS
 export
    portWindow:StartWindow
@@ -10,7 +9,6 @@ define
 
    MainURL={OS.getCWD}
    Img_water = {QTk.newImage photo(url:MainURL#"/images/water.gif")}
-   Img_small_water = {QTk.newImage photo(url:MainURL#"/images/smallWater.gif")}
    Img_ground = {QTk.newImage photo(url:MainURL#"/images/dirt.gif")}
    Img_sub = {QTk.newImage photo(url:MainURL#"/images/sub.gif")}
    Img_bomb = {QTk.newImage photo(url:MainURL#"/images/bomb.gif")}
@@ -163,7 +161,7 @@ in
       end
    end
    /* NEW */
-   
+
    fun{ExplosionN N Position}
       fun{$ Grid State}
 	 ID HandleScore Handle Mine Path LabelMine HandleMine X Y Img_expl

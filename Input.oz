@@ -1,6 +1,5 @@
 functor
 import
-   System
    OS
 export
    isTurnByTurn:IsTurnByTurn
@@ -103,9 +102,9 @@ in
 
 %%%% Players description %%%%
 
-   NbPlayer = 2
-   Players = [player000random player000random]
-   Colors = [yellow c(255 128 64)]
+   NbPlayer = 4
+   Players = [player000random player000random player000random player000random]
+   Colors = [yellow c(255 128 64) red purple]
 
 %%%% Thinking parameters (only in simultaneous) %%%%
 

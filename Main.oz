@@ -18,8 +18,8 @@ define
    PlaySimultaneous
    MainGame
 
-   GetTimeSurface
-   SetTimeSurface
+   %GetTimeSurface
+   %SetTimeSurface
 
    PlaySound
 
@@ -202,7 +202,7 @@ in
 			 [] missile(Position) then
 				try
 					{PlaySound explosion}
-				catch X then {System.show 'Error on sound'} end
+				catch X then {System.show 'Error on sound'#X} end
 				{System.show 'EXPLOSION'}
 			    {System.show KindItem}
 			    thread
@@ -252,7 +252,7 @@ in
 
 %%%%%%%%%% MISC METHODS %%%%%%%%%%%%%%%%%%%%%%
 
-    fun {GetTimeSurface ID}
+    /*fun {GetTimeSurface ID}
        fun {GTSr IDr TimeSurfacePlayers}
 	  case TimeSurfacePlayers of nil then nil
 	  [] H|T then
@@ -275,7 +275,7 @@ in
        end
     in
        {STSr ID.id ListTimeSurfacePlayers}
-    end
+    end*/
 
 %%%%%%%%%% END MISC METHODS %%%%%%%%%%%%%%%%%%
 
