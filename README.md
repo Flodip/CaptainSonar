@@ -8,6 +8,7 @@ Notre système redemandera une position initiale tant que la position envoyée p
 
 - Majeur
 
+Vérifier si GUI gère les couleurs de type c(\<colorNum> \<colorNum> \<colorNum>)
 
 Terminer la gestion de FireMine
 
@@ -17,7 +18,11 @@ Terminer basicAI
 
 Tests interopabilité
 
+Refactorer le code
+
 - Mineur
+
+Améliorer le design du tracage du Path
 
 Créer joueur humain
 
