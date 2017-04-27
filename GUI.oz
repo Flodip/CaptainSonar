@@ -16,8 +16,8 @@ define
    Img_bomb = {QTk.newImage photo(url:MainURL#"/images/bomb.gif")}
    Img_expl_2 = {QTk.newImage photo(url:MainURL#"/images/expl/2.gif")}
    Img_expl_4 = {QTk.newImage photo(url:MainURL#"/images/expl/4.gif")}
-   Img_expl_6 = {QTk.newImage photo(url:MainURL#"/images/expl/6.gif")}
-   Img_expl_8 = {QTk.newImage photo(url:MainURL#"/images/expl/8.gif")}
+   Img_expl_5 = {QTk.newImage photo(url:MainURL#"/images/expl/5.gif")}
+   Img_expl_7 = {QTk.newImage photo(url:MainURL#"/images/expl/7.gif")}
    StartWindow
    TreatStream
 
@@ -34,7 +34,7 @@ define
    DrawSubmarine
    MoveSubmarine
    DrawMine
-   Explosion
+   ExplosionN
    RemoveMine
    DrawPath
 
@@ -163,29 +163,23 @@ in
       end
    end
    /* NEW */
-   fun{Explosion Position}
+   
+   fun{ExplosionN N Position}
       fun{$ Grid State}
-	 ID HandleScore Handle Mine Path LabelExpl1 LabelExpl2 LabelExpl3 LabelExpl4 LabelWater HandleMine X Y
+	 ID HandleScore Handle Mine Path LabelMine HandleMine X Y Img_expl
       in
+	  case N
+	  of 1 then Img_expl = Img_expl_2
+	  [] 2 then Img_expl = Img_expl_4
+	  [] 3 then Img_expl = Img_expl_5
+	  else Img_expl = Img_expl_7
+	  end
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:Path) = State
 	 pt(x:X y:Y) = Position
-	 thread 
-		 LabelExpl1 = label(image:Img_expl_2 bg:c(45 123 253))
-		 {Grid.grid configure(LabelExpl1 row:X+1 column:Y+1)}
-		 {Delay 250}
-		 LabelExpl2 = label(image:Img_expl_4 bg:c(45 123 253))
-		 {Grid.grid configure(LabelExpl2 row:X+1 column:Y+1)}
-		 {Delay 250}
-		 LabelExpl3 = label(image:Img_expl_6 bg:c(45 123 253))
-		 {Grid.grid configure(LabelExpl3 row:X+1 column:Y+1)}
-		 {Delay 250}
-		 LabelExpl4 = label(image:Img_expl_8 bg:c(45 123 253))
-		 {Grid.grid configure(LabelExpl4 row:X+1 column:Y+1)}
-		 {Delay 250}
-		 LabelWater = label(image:Img_small_water bg:c(45 123 253))
-		 {Grid.grid configure(LabelWater row:X+1 column:Y+1)}
-		 
-	 end
+	 LabelMine = label(image:Img_expl handle:HandleMine bg:c(55 136 253))
+	 {Grid.grid configure(LabelMine row:X+1 column:Y+1)}
+	 {HandleMine 'raise'()}
+	 {Handle 'raise'()}
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
       end
    end
@@ -319,7 +313,9 @@ in
       [] removePlayer(ID)|T then
 	 {TreatStream T Grid {RemovePlayer Grid ID State}}
       [] explosion(ID Position)|T then
-	 {TreatStream T Grid {StateModification Grid ID State {Explosion Position}}}
+	 {TreatStream T Grid State}
+      [] explosion(ID N Position)|T then
+	 {TreatStream T Grid {StateModification Grid ID State {ExplosionN N Position}}}
       [] drone(ID Drone)|T then
 	 {TreatStream T Grid State}
       [] sonar(ID)|T then

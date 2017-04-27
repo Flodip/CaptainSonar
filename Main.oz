@@ -205,8 +205,21 @@ in
 				catch X then {System.show 'Error on sound'} end
 				{System.show 'EXPLOSION'}
 			    {System.show KindItem}
-			    {BroadcastMissileExplode T ID Position Msg}
-			    {Send Judge explosion(ID KindItem.1)}
+			    thread 
+					{BroadcastMissileExplode T ID Position Msg}
+					{Send Judge explosion(ID 1 KindItem.1)}
+					{Delay 200}
+					{Send Judge removeMine(ID KindItem.1)}
+					{Send Judge explosion(ID 2 KindItem.1)}
+					{Delay 200}
+					{Send Judge removeMine(ID KindItem.1)}
+					{Send Judge explosion(ID 3 KindItem.1)}
+					{Delay 200}
+					{Send Judge removeMine(ID KindItem.1)}
+					{Send Judge explosion(ID 4 KindItem.1)}
+					{Delay 200}
+					{Send Judge removeMine(ID KindItem.1)}
+				end
 			 [] sonar then skip %TODO
 			 [] drone then skip %TODO
 			 else skip
