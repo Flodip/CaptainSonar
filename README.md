@@ -22,6 +22,8 @@ Refactorer le code
 
 - Mineur
 
+Améliorer le design du tracage du Path
+
 Créer joueur humain
 
 Bug affichage explosion
