@@ -12,6 +12,7 @@ define
    Judge
    ListPlayers
    ListTimeSurfacePlayers
+   IsWinner
 
    InitPlayers
    InitPosPlayers
@@ -103,6 +104,22 @@ in
        end
     end
 
+    fun {IsWinner Players}
+       fun {Loop P I}
+          if P == nil then 
+             I == 1
+          else
+             if P.1 \= null then
+                {Loop P.2 I+1}
+             else
+                {Loop P.2 I}
+             end
+          end
+       end
+    in
+       {Loop Players 0}
+    end
+
 %%%%%%%%%% End utilities %%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%% MAIN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,7 +149,6 @@ in
 	  [] P|T then
 	     {Send P initPosition(ID Pos)}
             %The position is incorrect, asked a new one
-            {System.show Pos}
 	     if {Not {IsCorrectMove Pos}} then
 		{IPPR Players}
             %The position is sent to the GUI and asks the next player
@@ -148,7 +164,6 @@ in
     end
 
     proc {PlaySimultaneous Players TimeSurfacePlayers}
-       {System.show Players}
        case Players
        of H|T then
 	  thread {MainGame H|nil TimeSurfacePlayers} end
@@ -159,7 +174,7 @@ in
 
     proc {MainGame Players TimeSurfacePlayers}
        if Input.isTurnByTurn == false then
-	       {SimulateThinking}
+          {SimulateThinking}
        end
        case Players#TimeSurfacePlayers of (P|T)#(TimeSurface|TimeT) then
           Time in
@@ -169,6 +184,15 @@ in
 	     skip
           %Player still alive
 	  else
+             if {IsWinner Players} then
+                local X ID Ans in
+                   %send isSurface to have ID
+                   {Send P isSurface(ID Ans)}
+                   {System.show 'WINNER:'#ID.name}
+                   %Block process, the game has ended
+                   {Wait X}
+                end
+             else
 	     ID Surface in
 	     {Send P isSurface(ID Surface)}
 	     {System.show '-------Player'#ID.id#'------'}
@@ -182,7 +206,7 @@ in
 		{Send P move(ID Position Direction)}
 		{Wait ID}
 		IDTmp = ID
-            %Ask Player if he wants to move or dive
+                %Ask Player if he wants to move or dive
 		if Direction == surface then
 		   {Send Judge surface(IDTmp)}
 		   {BroadcastSurface T IDTmp}
@@ -190,61 +214,88 @@ in
 		else
 		   Time = TimeSurface
 		   if {Not {IsCorrectMove Position}} then
+                      {System.show 'incorrect move'}
 		      {MainGame Players TimeSurfacePlayers}
 		   else
 		      {Send Judge movePlayer(IDTmp Position)}
 		      {BroadcastMove T IDTmp Position}
 
-                  %Can charge an item
+                      %Can charge an item
 		      local ID KindItem in
-			 {Send P chargeItem(ID KindItem)}
-			 {Wait KindItem}
-			 if KindItem == null then
-			    skip
-			 else
+	                 {Send P chargeItem(ID KindItem)}
+		         {Wait KindItem}
+		         if KindItem == null then
+                            {System.show 'charge item - item+1'}
+		            skip
+		         else
+                            {System.show 'charge item'}
 			    {BroadcastCharge T ID KindItem}
-			 end
-		      end
+		         end
+		       end
 
-                  %Can fire an item
-                  %We dont check if the player has enough charges
+                      %Can fire an item
+                      %We dont check if the player has enough charges
+                      UpdatedPlayers1 UpdatedPlayers2 in
 		      local ID KindItem Position Drone Msg in
 			 {Send P fireItem(ID KindItem)}
 			 {Wait KindItem}
-			 case KindItem of null then skip
+			 case KindItem of null then
+                            UpdatedPlayers1 = Players
 			 [] mine(Position) then
-			    {System.show 'MINE'}
-			    {System.show KindItem}
+                            {System.show 'put mine'}
 			    {BroadcastMinePlaced T ID}
 			    {Send Judge putMine(ID Position)}
+                            UpdatedPlayers1 = Players
 			 [] missile(Position) then
-                            {BroadcastMissileExplode T ID Position Msg}
+                            {System.show 'launch missile'}
+                            UpdatedPlayers1 = {BroadcastMissileExplode Players ID Position}
 			    try {PlaySound explosion}
 			    catch X then
                                 {System.show 'Error on sound'#X}
                             end
                             {DoExplosionAnimation ID Position}
-			 [] sonar then skip %TODO
-			 [] drone then skip %TODO
-			 else skip
-			 end
-		      end
-
-                  %Can Blow up Mine
-		      local ID Mine Msg in
-                         {Send P fireMine(?ID ?Mine)}
-			 if Mine == null then
-			    skip
+			 [] sonar then %TODO
+                            {System.show 'launch sonar'}
+                            UpdatedPlayers1 = Players
+			 [] drone then %TODO
+                            {System.show 'send drone'}
+                            UpdatedPlayers1 = Players
 			 else
-                            {BroadcastMineExplode T P Mine Msg}
+                            {System.show 'fire nothing'}
+                            UpdatedPlayers1 = Players
 			 end
 		      end
+                      %if player is dead, stop
+                      if UpdatedPlayers1.1 \= null then 
+		         local ID Mine Msg in
+                            {Send P fireMine(ID Mine)}
+                            {Wait ID}
+                            if ID == null then
+                               % PLAYER DEAD
+                               {System.show 'dead'}
+                               {MainGame {Append UpdatedPlayers1.2 null|nil} {Append TimeT Time|nil}}
+                            else
+			       if Mine == null then
+                                  {System.show 'cannot fire mine'}
+			          UpdatedPlayers2 = UpdatedPlayers1
+			       else
+                                  {System.show 'fire mine'}
+                                  UpdatedPlayers2 = {BroadcastMineExplode UpdatedPlayers1 P Mine}
+			       end
+                               {MainGame {Append UpdatedPlayers2.2 UpdatedPlayers2.1|nil} {Append TimeT Time|nil}}
+                             end
+                          end
+                       else
+                          % PLAYER DEAD
+                          {MainGame {Append UpdatedPlayers1.2 null|nil} {Append TimeT Time|nil}}
+                       end
 		   end
 		end
+                end
 	     end
 	  end
          %Player put at the end of the list, and we begin the next player's turn
-	  {Delay 300}
+	  %{Delay 300}
 	  {MainGame {Append T P|nil} {Append TimeT Time|nil}}
        end
     end
@@ -289,8 +340,11 @@ in
        proc {Br L}
 	  case L of nil then skip
 	  [] H|T then
-	     {Send H Msg}
-	    {Br T}
+             if H == null then skip
+             else
+	        {Send H Msg}
+             end
+	     {Br T}
 	  end
        end
     in
@@ -313,12 +367,59 @@ in
        {Broadcast sayMinePlaced(ID) Players}
    end
 
-    proc {BroadcastMissileExplode Players ID Position Message}
-       {Broadcast sayMissileExplode(ID Position Message) Players}
+    fun {BroadcastMissileExplode Players ID Position}
+       fun {Loop P}
+          Message in
+          case P of nil then nil
+          [] H|T then 
+             if H == null then null|{Loop T}
+             else 
+                {Send H sayMissileExplode(ID Position Message)}
+                case Message of null then 
+                   H|{Loop T}
+                [] sayDeath(PID) then
+                   {Send Judge lifeUpdate(PID 0)}
+                   {Send Judge removePlayer(PID)}
+                   {BroadcastDeath Players PID}
+                   null|{Loop T}
+                [] sayDamageTaken(PID Damage LifeLeft) then
+                   {Send Judge lifeUpdate(PID LifeLeft)}
+                   {BroadcastDamageTaken Players PID Damage LifeLeft}
+                   H|{Loop T}
+                end
+             end
+          end
+       end
+    in
+       {Loop Players}
     end
 
-    proc {BroadcastMineExplode Players ID Position Message}
-       {Broadcast sayMineExplode(ID Position Message) Players}
+    fun {BroadcastMineExplode Players ID Position}
+       fun {Loop P}
+          Message in
+          case P of nil then nil
+          [] H|T then 
+             if H == null then null|{Loop T}
+             else 
+                {Send H sayMineExplode(ID Position Message)}
+                case Message of null then 
+                   H|{Loop T}
+                [] sayDeath(PID) then
+                   {Send Judge lifeUpdate(PID 0)}
+                   {Send Judge removePlayer(PID)}
+                   {BroadcastDeath Players PID}
+                   null|{Loop T}
+                [] sayDamageTaken(PID Damage LifeLeft) then
+                    {System.show PID}
+                   {Send Judge lifeUpdate(PID LifeLeft)}
+                   {BroadcastDamageTaken Players PID Damage LifeLeft}
+                   H|{Loop T}
+                end
+             end
+          end
+       end
+    in
+       {Loop Players}
     end
 
     proc {BroadcastPassingDrone Players Drone ID Answer}
@@ -341,8 +442,8 @@ in
        {Broadcast sayDeath(ID) Players}
     end
 
-   proc {BroadcastDamageTaken Players ID LifeLeft}
-      {Broadcast sayDamageTaken(ID LifeLeft) Players}
+   proc {BroadcastDamageTaken Players ID Damage LifeLeft}
+      {Broadcast sayDamageTaken(ID Damage LifeLeft) Players}
    end
 
    proc {GenerateMapLoop}

@@ -13,6 +13,7 @@ in
       case Kind
       of player009random then {Player009Random.portPlayer Color ID}
       [] player009basicai then {Player009BasicAI.portPlayer Color ID}
+      %AI of Hélène
       [] playerbasicai then {PlayerBasicAI.portPlayer Color ID}
       end
    end

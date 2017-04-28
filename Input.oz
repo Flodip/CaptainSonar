@@ -72,8 +72,8 @@ in
 
 %%%% Description of the map %%%%
 
-   NRow = 13
-   NColumn = 13
+   NRow = 10
+   NColumn = 10
 
    GenerateMap = true
    PercentOfGround = 30
@@ -217,8 +217,8 @@ in
    
 %%%% Players description %%%%
 
-   NbPlayer = 2
-   Players = [player009basicai  player009random player009random player009random]
+   NbPlayer = 4
+   Players = [player009basicai  player009random player009random playerbasicai]
    Colors = [red blue yellow c(255 128 64)]
 
 %%%% Thinking parameters (only in simultaneous) %%%%

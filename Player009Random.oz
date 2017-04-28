@@ -309,46 +309,46 @@ in
       Position  in
 	    case PItems of
 	    it(missile:1 mine:0 sonar:0 drone:0) then
-	    ID = PID
 	    KindFire = missile({GiveCoordAttack PPosition Input.minDistanceMissile Input.maxDistanceMissile})
+	    ID = PID
 
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	    	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    [] it(missile:0 mine:1 sonar:0 drone:0) then
-	       ID = PID
 	       KindFire = mine({GiveCoordAttack PPosition Input.minDistanceMine Input.maxDistanceMine})
+	       ID = PID
 	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	       	   it(missile:0 mine:0 sonar:0 drone:0) {Append PMines Position|nil} PPathHistoric}
 	    [] it(missile:0 mine:0 sonar:1 drone:0) then
-	       ID = PID
 	       KindFire = sonar
+	       ID = PID
 	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    %not yet managed
 	    [] it(missile:0 mine:0 sonar:0 drone:1) then
-	       ID = PID
 	       KindFire = null
+	       ID = PID
 	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	it(missile:0 mine:0 sonar:0 drone:0) PMines PPathHistoric}
 	    else
-	       ID = PID
 	       KindFire = null
+	       ID = PID
 	       {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge
 	 	PItems PMines PPathHistoric}
 	    end
 	 [] fireMine(ID Mine)|T then
 	 	WillFireMine NewPMines in
 	 	WillFireMine = {OS.rand} mod 1
-	 	ID = PID
 
 	 	if({And WillFireMine == 1 PMines \= nil}) then
 	 	   Mine = PMines.1
 	 	   NewPMines = PMines.2
 	 	else
-	 	   Mine = nil
+	 	   Mine = null
 	 	   NewPMines = PMines
 	 	end
 
+	 	ID = PID
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems NewPMines PPathHistoric}
 	 [] isSurface(ID Answer)|T then
 	    ID = PID
@@ -364,15 +364,15 @@ in
 	    %TODO: save that the player ID has used one of his missile
 
 	    LifeLeft in
-	    LifeLeft = {SufferExplosion PID Position PPosition PLife ?Message}
+	    LifeLeft = {SufferExplosion PID Position PPosition PLife Message}
 
 	    {Loop T PID LifeLeft ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
-	 [] sayMineExplode(ID Position Message)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
+	 [] sayMineExplode(ID Position Message)|T then
 
 	    %TODO: save that the player ID has used one of his placed mine
 
 	    LifeLeft in
-	    LifeLeft = {SufferExplosion PID Position PPosition PLife ?Message}
+	    LifeLeft = {SufferExplosion PID Position PPosition PLife Message}
 
 	    {Loop T PID LifeLeft ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 % Drones not yet managed
@@ -385,18 +385,30 @@ in
 	 [] sayAnswerSonar(ID Answer)|T then {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] sayDeath(ID)|T then
 	    NewListEnemies in
-	    {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
+	    if ID \= PID then
+	       {AdjoinList ListEnemies [ID.id#null] NewListEnemies}
+	    else
+	       NewListEnemies = ListEnemies
+	    end
 	    {Loop T PID PLife NewListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 [] sayDamageTaken(ID Damage LifeLeft)|T then
 	    %can use Damage information to estimate Player position
 
-	    NewListEnemies Enemy in
-	    Enemy = ListEnemies.(ID.id)
-	    if Enemy == null then
-	       NewListEnemies = ListEnemies
+   	    NewListEnemies Enemy in
+	    if ID \= PID then
+	       Enemy = ListEnemies.(ID.id)
+	       if Enemy == null then
+	          NewListEnemies = ListEnemies
+	       else
+	          {AdjoinList ListEnemies [ID.id#enemy(life:LifeLeft)] NewListEnemies}
+	       end
 	    else
-	       {AdjoinList ListEnemies [ID.id#enemy(life:LifeLeft)] NewListEnemies}
+	       NewListEnemies = ListEnemies
 	    end
+
+	    {Loop T PID PLife NewListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
+	 [] H|T then
+	    {System.show 'Invalid Msg '#H}
 	    {Loop T PID PLife ListEnemies PIsSurface PPosition PItemsCharge PItems PMines PPathHistoric}
 	 end
       end
