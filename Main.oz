@@ -22,6 +22,7 @@ define
    %SetTimeSurface
 
    PlaySound
+   DoExplosionAnimation
 
 
    Broadcast
@@ -85,6 +86,22 @@ in
        {OS.pipe Command Args Pid Stdin#Stdout}
     end
 
+    proc {DoExplosionAnimation ID Position}
+       thread
+          {Send Judge explosion(ID 1 Position)}
+          {Delay 200}
+          {Send Judge removeMine(ID Position)}
+          {Send Judge explosion(ID 2 Position)}
+          {Delay 200}
+          {Send Judge removeMine(ID Position)}
+          {Send Judge explosion(ID 3 Position)}
+          {Delay 200}
+          {Send Judge removeMine(ID Position)}
+          {Send Judge explosion(ID 4 Position)}
+          {Delay 200}
+          {Send Judge removeMine(ID Position)}
+       end
+    end
 
 %%%%%%%%%% End utilities %%%%%%%%%%%%%%%%%%%%%
 
@@ -154,7 +171,7 @@ in
 	  else
 	     ID Surface in
 	     {Send P isSurface(ID Surface)}
-	     {System.show '-------Player'#ID.id}
+	     {System.show '-------Player'#ID.id#'------'}
              %If Player at surface, he has to wait x turns before diving
 	     if Surface then
 		if TimeSurface == 1 then
@@ -199,29 +216,14 @@ in
 			    {System.show 'MINE'}
 			    {System.show KindItem}
 			    {BroadcastMinePlaced T ID}
-			    {Send Judge putMine(ID KindItem.1)}
+			    {Send Judge putMine(ID Position)}
 			 [] missile(Position) then
+                            {BroadcastMissileExplode T ID Position Msg}
 			    try {PlaySound explosion}
 			    catch X then
                                 {System.show 'Error on sound'#X}
                             end
-			    {System.show 'EXPLOSION'}
-			    {System.show KindItem}
-			    thread
-					{BroadcastMissileExplode T ID Position Msg}
-					{Send Judge explosion(ID 1 KindItem.1)}
-					{Delay 200}
-					{Send Judge removeMine(ID KindItem.1)}
-					{Send Judge explosion(ID 2 KindItem.1)}
-					{Delay 200}
-					{Send Judge removeMine(ID KindItem.1)}
-					{Send Judge explosion(ID 3 KindItem.1)}
-					{Delay 200}
-					{Send Judge removeMine(ID KindItem.1)}
-					{Send Judge explosion(ID 4 KindItem.1)}
-					{Delay 200}
-					{Send Judge removeMine(ID KindItem.1)}
-				end
+                            {DoExplosionAnimation ID Position}
 			 [] sonar then skip %TODO
 			 [] drone then skip %TODO
 			 else skip
@@ -229,14 +231,12 @@ in
 		      end
 
                   %Can Blow up Mine
-		      local ID Mine in
-                     %{Send P fireMine(?ID ?Mine)}
-			 Mine = null
+		      local ID Mine Msg in
+                         {Send P fireMine(?ID ?Mine)}
 			 if Mine == null then
 			    skip
 			 else
-			    skip
-                        %{BroadcastMineExplode T Mine }
+                            {BroadcastMineExplode T P Mine Msg}
 			 end
 		      end
 		   end

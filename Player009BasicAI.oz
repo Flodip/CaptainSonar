@@ -30,6 +30,7 @@ in
       Stream 
       Port
    in 
+      {System.show Input.map}
       {NewPort Stream Port} 
       thread {TreatStream Stream id(id:ID color:Color name:player009basicai)} end 
       Port 
@@ -228,10 +229,10 @@ in
 	       ID=PID
 	       {Loop T PID PLife ListEnemies true PModeMove PPosition PItemsCharge PItems PMines nil}
 	    else
-	       %goes est
+	       %goes south est
 	       if PModeMove == 1 then
 	          if {IsCorrectMove {ToEast PPosition} PPathHistoric} then
-	             Direction = est
+	             Direction = east
 	             Position = {ToEast PPosition}
 	          elseif {IsCorrectMove {ToSouth PPosition} PPathHistoric} then
 	             if PPosition.y > (Input.nColumn div 4)*3 then
@@ -245,11 +246,16 @@ in
 	             Direction = north
 	             Position = {ToNorth PPosition}
 	          else
-	             % Go to mode 2
-	             {Loop Stream PID PLife ListEnemies PIsSurface 2 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             if PPosition.x < (Input.nRow div 4)*3 then
+	                % Go to mode 2
+	                {Loop Stream PID PLife ListEnemies PIsSurface 2 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                % Go to mode 4
+	                {Loop Stream PID PLife ListEnemies PIsSurface 4 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             end
 	          end
-	       %goes west
-	       else
+	       %goes south west
+	       elseif PModeMove == 2 then
 	          if {IsCorrectMove {ToWest PPosition} PPathHistoric} then
 	             Direction = west
 	             Position = {ToWest PPosition}
@@ -265,9 +271,64 @@ in
 	             Direction = north
 	             Position = {ToNorth PPosition}
 	          else
-	             % Go to mode 1
-	             {Loop Stream PID PLife ListEnemies PIsSurface 1 PPosition PItemsCharge PItems PMines PPathHistoric}
-	             %should not be possible to loop infinitely between the modes thans to IsBlocked
+	             if PPosition.x < (Input.nRow div 4)*3 then
+	                % Go to mode 1
+	                {Loop Stream PID PLife ListEnemies PIsSurface 1 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                % Go to mode 3
+	                {Loop Stream PID PLife ListEnemies PIsSurface 3 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             %should not be possible to loop infinitely between the modes thanks to IsBlocked
+	             end
+	          end
+	       %goes north est
+	       elseif PModeMove == 3 then
+	          if {IsCorrectMove {ToEast PPosition} PPathHistoric} then
+	             Direction = east
+	             Position = {ToEast PPosition}
+	          elseif {IsCorrectMove {ToNorth PPosition} PPathHistoric} then
+	             if PPosition.y > (Input.nColumn div 4)*3 then
+	                % Go to mode 4
+	                {Loop Stream PID PLife ListEnemies PIsSurface 4 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                Direction = north
+	                Position = {ToNorth PPosition}
+	             end
+	          elseif {IsCorrectMove {ToSouth PPosition} PPathHistoric} then
+	             Direction = south
+	             Position = {ToSouth PPosition}
+	          else
+	             if PPosition.x > (Input.nRow div 4) then
+	                % Go to mode 4
+	                {Loop Stream PID PLife ListEnemies PIsSurface 4 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                % Go to mode 2
+	                {Loop Stream PID PLife ListEnemies PIsSurface 2 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             end
+	          end
+	       %goes north west
+	       else
+	          if {IsCorrectMove {ToWest PPosition} PPathHistoric} then
+	             Direction = west
+	             Position = {ToWest PPosition}
+	          elseif {IsCorrectMove {ToNorth PPosition} PPathHistoric} then
+	             if PPosition.y < (Input.nColumn div 4) then
+	                % Go to mode 3
+	                {Loop Stream PID PLife ListEnemies PIsSurface 3 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                Direction = north
+	                Position = {ToNorth PPosition}
+	             end
+	          elseif {IsCorrectMove {ToSouth PPosition} PPathHistoric} then
+	             Direction = south
+	             Position = {ToSouth PPosition}
+	          else
+	             if PPosition.x > (Input.nRow div 4) then
+	                % Go to mode 3
+	                {Loop Stream PID PLife ListEnemies PIsSurface 3 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             else
+	                % Go to mode 1
+	                {Loop Stream PID PLife ListEnemies PIsSurface 1 PPosition PItemsCharge PItems PMines PPathHistoric}
+	             end
 	          end
 	       end
 	       ID = PID
