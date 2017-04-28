@@ -33,7 +33,7 @@ define
    DrawSubmarine
    MoveSubmarine
    DrawMine
-   ExplosionN
+   Explosion
    RemoveMine
    DrawPath
 
@@ -170,23 +170,23 @@ in
    end
    /* NEW */
 
-   fun{ExplosionN N Position}
+   fun{Explosion Position}
       fun{$ Grid State}
 	 ID HandleScore Handle Mine Path LabelMine HandleMine X Y Img_expl
       in
-	  case N
+	  case Position.num
 	  of 1 then Img_expl = Img_expl_2
 	  [] 2 then Img_expl = Img_expl_4
 	  [] 3 then Img_expl = Img_expl_5
 	  else Img_expl = Img_expl_7
 	  end
 	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:Mine path:Path) = State
-	 pt(x:X y:Y) = Position
+	 pt(x:X y:Y) = Position.pos
 	 LabelMine = label(image:Img_expl handle:HandleMine bg:c(55 136 253))
 	 {Grid.grid configure(LabelMine row:X+1 column:Y+1)}
 	 {HandleMine 'raise'()}
 	 {Handle 'raise'()}
-	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position)|Mine path:Path)
+	 guiPlayer(id:ID score:HandleScore submarine:Handle mines:mine(HandleMine Position.pos)|Mine path:Path)
       end
    end
    /*END NEW*/
@@ -319,9 +319,7 @@ in
       [] removePlayer(ID)|T then
 	 {TreatStream T Grid {RemovePlayer Grid ID State}}
       [] explosion(ID Position)|T then
-	 {TreatStream T Grid State}
-      [] explosion(ID N Position)|T then
-	 {TreatStream T Grid {StateModification Grid ID State {ExplosionN N Position}}}
+	 {TreatStream T Grid {StateModification Grid ID State {Explosion Position}}}
       [] drone(ID Drone)|T then
 	 {TreatStream T Grid State}
       [] sonar(ID)|T then

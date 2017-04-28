@@ -88,16 +88,16 @@ in
 
     proc {DoExplosionAnimation ID Position}
        thread
-          {Send Judge explosion(ID 1 Position)}
+          {Send Judge explosion(ID t(num:1 pos:Position))}
           {Delay 200}
           {Send Judge removeMine(ID Position)}
-          {Send Judge explosion(ID 2 Position)}
+          {Send Judge explosion(ID t(num:2 pos:Position))}
           {Delay 200}
           {Send Judge removeMine(ID Position)}
-          {Send Judge explosion(ID 3 Position)}
+          {Send Judge explosion(ID t(num:3 pos:Position))}
           {Delay 200}
           {Send Judge removeMine(ID Position)}
-          {Send Judge explosion(ID 4 Position)}
+          {Send Judge explosion(ID t(num:4 pos:Position))}
           {Delay 200}
           {Send Judge removeMine(ID Position)}
        end

@@ -72,11 +72,11 @@ in
 
 %%%% Description of the map %%%%
 
-   NRow = 10
-   NColumn = 10
+   NRow = 13
+   NColumn = 13
 
    GenerateMap = true
-   PercentOfGround = 40
+   PercentOfGround = 30
 
    proc {DefaultMapProc}
      Map = [[0 0 0 0 0 0 0 0 0 0]
@@ -218,8 +218,8 @@ in
 %%%% Players description %%%%
 
    NbPlayer = 2
-   Players = [player009basicai player009random]
-   Colors = [yellow c(255 128 64)]
+   Players = [player009basicai  player009random player009random player009random]
+   Colors = [red blue yellow c(255 128 64)]
 
 %%%% Thinking parameters (only in simultaneous) %%%%
 
