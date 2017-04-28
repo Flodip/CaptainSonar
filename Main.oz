@@ -17,7 +17,7 @@ define
    InitPosPlayers
    PlaySimultaneous
    MainGame
-
+   GenerateMapLoop
    %GetTimeSurface
    %SetTimeSurface
 
@@ -345,12 +345,16 @@ in
       {Broadcast sayDamageTaken(ID LifeLeft) Players}
    end
 
+   proc {GenerateMapLoop}
+      if {Input.generateMapProc} == false then {GenerateMapLoop} else skip end
+   end
+   
 %%%%%%%%%% END BROADCAST METHOD %%%%%%%%%%%%%%
 
 
    %Port GUI init and display Window
    if Input.generateMap == true then
-      {Input.generateMapProc}
+      {GenerateMapLoop}
    else
       {Input.defaultMapProc}
    end
